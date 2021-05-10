@@ -1,0 +1,14 @@
+{
+  "name": "mib-core",
+  "version": "1.0.0",
+  "description": "Mens in Beweging core",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.2",
+    "express": "^4.16.3",
+    "mongoose": "^5.2.7"
+  }
+}

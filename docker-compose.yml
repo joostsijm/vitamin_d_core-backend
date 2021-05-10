@@ -1,0 +1,17 @@
+version: '3'
+services:
+  core:
+    restart: always
+    build: ./core
+    ports:
+      - 80:3000
+    volumes:
+      - ./core:/code
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb:/data/db
+volumes:
+ mongodb:
