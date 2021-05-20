@@ -1,5 +1,7 @@
+# syntax=docker/dockerfile:1
+
 # Set base image
-FROM node:14
+FROM node:16-slim
 
 # Create app directory
 WORKDIR /usr/src/app
