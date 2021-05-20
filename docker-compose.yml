@@ -1,27 +1,26 @@
-version: '3'
+version: '3.9'
 services:
   core:
     restart: always
     build: ./vitamin_d_core
     ports:
-      - 80:3000
-    volumes:
-      - ./core:/code
-  core:
+      - 80:80
+
+  scheduler:
     restart: always
     build: ./vitamin_d_scheduler
-    volumes:
-      - ./vitamin_d_scheduler:/vitamin_d_scheduler
+        
   resource_user:
     restart: always
     build: ./vitamin_d_resource_user
-    volumes:
-      - ./vitamin_d_resource_user:/vitamin_d_resource_user
+
   mongo:
     image: mongo
+    command: --quiet --logpath /dev/null
     ports:
       - 27017:27017
     volumes:
       - mongodb:/data/db
+
 volumes:
  mongodb:

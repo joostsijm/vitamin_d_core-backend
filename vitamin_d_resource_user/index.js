@@ -7,16 +7,13 @@ app.use(express.urlencoded({ extended: false }));
 
 // Connect to MongoDB
 mongoose
-  .connect(
-    'mongodb://mongo:27017/vitamin-d',
-    { useNewUrlParser: true }
-  )
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.log(err));
+    .connect('mongodb://mongo:27017/vitamin-d', { useNewUrlParser: true })
+    .then(() => console.log('MongoDB Connected'))
+    .catch(err => console.log(err));
 
-const User= require('./models/User');
+const User = require('./models/User');
 
-app.get('/', (req, res) => {
+app.get('/user', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     User.find()
         .then(users => res.end(JSON.stringify( users )))
@@ -24,13 +21,9 @@ app.get('/', (req, res) => {
 });
 
 app.post('/user/add', (req, res) => {
-  const newUser = new User({
-    name: req.body.name
-  });
-
-  newUser.save().then(user => res.redirect('/'));
+    const newUser = new User({ name: req.body.name });
+    newUser.save().then(user => res.redirect('/'));
 });
 
-const port = 3000;
-
+const port = 80;
 app.listen(port, () => console.log('Server running...'));
