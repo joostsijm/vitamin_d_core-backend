@@ -9,21 +9,28 @@ app.use(express.urlencoded({ extended: false }));
 
 // Connect to MongoDB
 app.get('/', (request, response) => {
+    response.render('index')
+});
 
+// Connect to MongoDB
+app.get('/user', (request, response) => {
     // Optionally the request above could also be done as
     axios.get('http://resource_user/user')
-        .then(function (response) {
-            response.render('index')
-            console.log('response')
-            // console.log(response);
+        .then(function (api_response) {
+            response.render('user', { api_response } )
         })
         .catch(function (error) {
             console.log(error);
-        })
-        .then(function () {
-            // always executed
         });
+});
 
+app.post('/user', (request, response) => {
+    console.log(request.body)
+    axios.post('http://resource_user/user', { name: 'rick' })
+        .then(response.redirect('/user'))
+        .catch(function (error) {
+            console.log(error);
+        });
 });
 
 const port = 80;

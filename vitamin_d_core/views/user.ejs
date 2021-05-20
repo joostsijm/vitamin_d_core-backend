@@ -17,9 +17,17 @@
     &nbsp;&nbsp;\&nbsp;V&nbsp;/&nbsp;|&nbsp;|&nbsp;||&nbsp;(_|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|&nbsp;|_____|&nbsp;|_|&nbsp;|&nbsp;&nbsp;|&nbsp;|__|&nbsp;(_)&nbsp;|&nbsp;|&nbsp;|&nbsp;&nbsp;__/<br>
     &nbsp;&nbsp;&nbsp;\_/&nbsp;&nbsp;|_|\__\__,_|_|&nbsp;|_|&nbsp;|_|_|_|&nbsp;|_|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|____/&nbsp;&nbsp;&nbsp;&nbsp;\____\___/|_|&nbsp;&nbsp;\___|<br>
     </p> 
+    <form method="post">
+        <label for="name">Name</label>
+        <input type="text" name="name">
+        <input type="submit" value="Add">
+    </form>
+    <h4>Users:</h4>
     <ul>
-        <li><a href="/user">/user</a></li>
-    <ul>
+    <% api_response.data.forEach(function(user) { %>
+        <li><%= users.name %></li>
+    <% }); %>
+    </ul>
 </body>
 
 </html>

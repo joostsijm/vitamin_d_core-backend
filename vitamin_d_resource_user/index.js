@@ -13,16 +13,19 @@ mongoose
 
 const User = require('./models/User');
 
-app.get('/user', (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
+app.get('/user', (request, response) => {
+    response.setHeader('Content-Type', 'application/json');
     User.find()
-        .then(users => res.end(JSON.stringify( users )))
-        .catch(err => res.status(404).json({ msg: 'No users found' }));
+        .then(users => response.end(JSON.stringify( users )))
+        .catch(err => response.status(404).json({ msg: 'No users found' }));
 });
 
-app.post('/user/add', (req, res) => {
-    const newUser = new User({ name: req.body.name });
-    newUser.save().then(user => res.redirect('/'));
+app.post('/user', (request, response) => {
+    console.log(request)
+    const newUser = new User({ name: request.body.name });
+    newUser.save()
+        .then(user => response.redirect('/'))
+        .catch(err => response.status(400).json({ msg: 'Error saving user' }));
 });
 
 const port = 80;
