@@ -11,7 +11,7 @@ build:
 	docker build -t $(name) .
 
 start:
-	docker run --name $(name) -dp 8080:8080 $(name)
+	docker run --name $(name) -dp 3001:3000 $(name)
 
 stop:
 	docker stop $(name)

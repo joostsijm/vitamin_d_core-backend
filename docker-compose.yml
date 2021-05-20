@@ -2,11 +2,21 @@ version: '3'
 services:
   core:
     restart: always
-    build: ./core
+    build: ./vitamin_d_core
     ports:
       - 80:3000
     volumes:
       - ./core:/code
+  core:
+    restart: always
+    build: ./vitamin_d_scheduler
+    volumes:
+      - ./vitamin_d_scheduler:/vitamin_d_scheduler
+  resource_user:
+    restart: always
+    build: ./vitamin_d_resource_user
+    volumes:
+      - ./vitamin_d_resource_user:/vitamin_d_resource_user
   mongo:
     image: mongo
     ports:
