@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     LONG_DESCRIPTION = fh.read()
 
 setuptools.setup(
-    name="vitamin-d-scheduler",
+    name="vitamin_d_scheduler",
     version="0.1.0",
     author="Joost Sijm",
     author_email="joost.sijm3@hva.nl",
@@ -25,7 +25,7 @@ setuptools.setup(
         "requests",
     ],
     entry_points = {
-        'console_scripts': ['vitamin-d-scheduler=vitamin-d-scheduler.__main__:main'],
+        'console_scripts': ['vitamin_d_scheduler=vitamin_d_scheduler.__main__:main'],
     },
     classifiers=[
         "Programming Language :: Python :: 3",

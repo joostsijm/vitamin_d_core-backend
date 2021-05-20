@@ -3,17 +3,17 @@
 import sys
 import time
 
-from vitamin-d-scheduler import create_app
+from vitamin_d_scheduler import create_app
 
 
 def main():
     """Main function"""
     app = create_app()
-    app.run()
+    app.run(host='0.0.0.0')
     try:
         while True:
             time.sleep(100)
-    except KeyboardInterurrupt:
+    except KeyboardInterrupt:
         sys.exit()
 
 if __name__ == '__main__':

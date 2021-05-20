@@ -1,11 +1,9 @@
-"""Stall blueprint"""
+"""Notification blueprint"""
 
 from flask import Blueprint, request, abort
 
-from iot_backend import payment_wrapper
 
-
-blueprint = Blueprint('api_stall', __name__, url_prefix='/api/stall')
+blueprint = Blueprint('api_notification', __name__, url_prefix='/api/notification')
 
 @blueprint.route('/', methods=(['GET', 'POST']))
 def index():

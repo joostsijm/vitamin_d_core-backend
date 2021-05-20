@@ -6,7 +6,7 @@ import tempfile
 import pytest
 from dotenv import load_dotenv
 
-from vitamin-d-scheduler import create_app
+from vitamin_d_scheduler import create_app
 
 
 load_dotenv()

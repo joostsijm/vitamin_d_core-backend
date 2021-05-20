@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
 
-from vitamin-d-scheduler.blueprints import api
+from vitamin_d_scheduler.blueprints import api
 
 
 # Find .env file
@@ -34,7 +34,7 @@ def create_app(test_config=None):
         pass
 
     # Apscheduler
-    from vitamin-d-scheduler.scheduler import scheduler, start_jobs
+    from vitamin_d_scheduler.scheduler import scheduler, start_jobs
     scheduler.init_app(app)
     scheduler.start()
     start_jobs()
