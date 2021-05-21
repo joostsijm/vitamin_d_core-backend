@@ -3,6 +3,14 @@ const mongoose = require('mongoose');
 
 const app = express();
 
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({
+   extended: true
+}));
+
 app.use(express.urlencoded({ extended: false }));
 
 // Connect to MongoDB
@@ -21,7 +29,6 @@ app.get('/user', (request, response) => {
 });
 
 app.post('/user', (request, response) => {
-    console.log(request)
     const newUser = new User({ name: request.body.name });
     newUser.save()
         .then(user => response.redirect('/'))

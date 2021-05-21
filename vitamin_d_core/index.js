@@ -3,6 +3,14 @@ const axios = require('axios');
 
 const app = express();
 
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({
+   extended: true
+}));
+
 app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended: false }));
@@ -25,8 +33,7 @@ app.get('/user', (request, response) => {
 });
 
 app.post('/user', (request, response) => {
-    console.log(request.body)
-    axios.post('http://resource_user/user', { name: 'rick' })
+    axios.post('http://resource_user/user', request.body)
         .then(response.redirect('/user'))
         .catch(function (error) {
             console.log(error);
