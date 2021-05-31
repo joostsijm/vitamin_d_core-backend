@@ -1,3 +1,5 @@
+"""Database models"""
+
 from flask_mongoengine import mongoengine as me
 
 TELECOMTYPE = ('LL', 'FAX', 'MC', 'PG')
