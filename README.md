@@ -1,9 +1,15 @@
 # Mens in Beweging Platform
 
-## Docker 
+## Docker
 
-Start microservices platform 
-> docker-compose up -d --build
+Start platform
+> make up
+
+Bekijk logs
+> make logs
+
+Stop platform
+> make down
 
 ## MongoDB
 NoSQL database
