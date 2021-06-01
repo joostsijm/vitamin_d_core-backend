@@ -23,8 +23,8 @@ def create_app(test_config=None):
         FLASK_ENV=environ.get('FLASK_ENV'),
         SECRET_KEY=environ.get('FLASK_SECRET_KEY'),
         MONGODB_SETTINGS={
-                'db': 'vitamin-d',
-                'host': 'mongodb://mongo:27017/vitamin-d'
+                'db': environ.get('MONOG_DB'),
+                'host': environ.get('MONOG_HOST'),
             },
     )
 
