@@ -46,6 +46,7 @@ class GeslachtsnaamUser(me.EmbeddedDocument):
 
 
 class NaamgegevensUser(me.EmbeddedDocument):
+    naamgegevens_id = me.IntField()
     titels = me.StringField()
     voornamen = me.StringField()
     initialen = me.StringField()
@@ -58,6 +59,7 @@ class NaamgegevensUser(me.EmbeddedDocument):
 
 class Administrator(me.Document):
     administrator_id = me.IntField()
+    geboortedatum = me.DateTimeField()
     geslacht = me.StringField(choices=GESLACHTSSOORT) #'UN', 'M', 'F', 'UNK'
     specialisme = me.StringField()
     zorgverlenerRol = me.StringField(choices=ZORGVERLENERROL) #'RESP', 'REF', 'PRF', 'SPRF', 'CON', 'ATND', 'OTH'
@@ -88,6 +90,7 @@ class UserData(me.EmbeddedDocument):
 
 class User(me.Document):
     user_id = me.IntField()
+    geboortedatum = me.DateTimeField()
     geslacht = me.StringField(choices=GESLACHTSSOORT) #'UN', 'M', 'F', 'UNK'
     naamgegevens = me.EmbeddedDocumentField(NaamgegevensUser)
     # AdressgegevensUser()
@@ -95,7 +98,7 @@ class User(me.Document):
     # ContactgegevensUser()
     # TelefoonnummersUser()
     # EmailAdressenUser()
-    userData = me.EmbeddedDocumentField(UserData)
+    userdata = me.EmbeddedDocumentField(UserData)
     # Lichaamsgewicht()
     # Lichaamslengte()
 
@@ -108,3 +111,7 @@ class Schedual(me.Document):
     schedual_id = me.ReferenceField(User)
     beschrijving = me.StringField()
     datum = me.DateTimeField()
+
+class Login(me.DocumentField):
+    username = me.ReferenceField(ContactgegevensUser.emailAdressen)
+    password = me.StringField()
