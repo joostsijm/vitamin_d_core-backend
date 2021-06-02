@@ -1,28 +1,14 @@
-from flask import Flask
-from flask_mongoengine import MongoEngine
-# from flask_mongoengine import mongoengine as me
-from DatabaseClasses import *
-
-
-class Config(object):
-    MONGODB_SETTINGS = {'db':'IoTVitamineD'}
-
-
-app = Flask(__name__)
-app.config.from_object(Config)
-
-db=MongoEngine()
-db.init_app(app)
+def testing(var1, var2, var3):
+    listlist = var1, var2, var3
+    for data in listlist:
+        if data == ' ':
+            listlist.remove()
 
 
 
+if __name__ == '__main__':
+    q1 = 'hallo'
+    q2 = 3
+    q3 = 'miep'
 
-
-@app.route('/test')
-def home():
-
-    user = User(geslacht="M")
-    user.save()
-
-
-    return "test"
+    testing(q1, q2, q3)

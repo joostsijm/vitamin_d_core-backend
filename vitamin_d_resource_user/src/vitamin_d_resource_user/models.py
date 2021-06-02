@@ -112,6 +112,6 @@ class Schedual(me.Document):
     beschrijving = me.StringField()
     datum = me.DateTimeField()
 
-class Login(me.DocumentField):
+class Login(me.Document):
     username = me.ReferenceField(ContactgegevensUser.emailAdressen)
     password = me.StringField()
