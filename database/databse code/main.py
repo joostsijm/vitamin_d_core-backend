@@ -89,7 +89,7 @@ def getdata(username):
 
 @app.route('/checklogin/<username>/<password>')
 def checklogin(username, password):
-    if Login.objects(username__exact=username) & Login.objects(password__exact=password)
+    if Login.objects(username__exact=username) & Login.objects(password__exact=password):
         return True
     else:
         return False
