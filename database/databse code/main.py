@@ -49,19 +49,40 @@ def sendName(geslacht, voornaam, achternaam, username, password, geboortedatum, 
     user.naamgegevens.contactgegevens = ContactgegevensUser()
     user.naamgegevens.contactgegevens.emailAdressen = EmailAdressenUser(emailAdres=username)
     user.userdata.lichaamslengte = Lichaamslengte(lengteWaarde=lengte, lengteDatum=lengtedatum, positie=lengtepositie)
-    user.userdata.lichaamsgewicht = Lichaamsgewicht(gewichtWaarde=gewicht, gewichtDatum=gewichtdatum, positie=gewichtpositie)
+    user.userdata.lichaamsgewicht = Lichaamsgewicht(gewichtWaarde=gewicht, gewichtDatum=gewichtdatum,
+                                                    positie=gewichtpositie)
     user.save()
     login = Login(username=username, password=password)
     login.save()
     return 'send'
 
 
+@app.route('/replacedata/<username>/<lengte>/<lengtedatum>/<lengtepositie>')
+def replacelengtdata(username, lengte, lengtedatum, lengtepositie):
+    change = User.objects(User__naamgegevens__contactgegevens__emailAdressen__emailAdres=username)\
+        .update(set__user__userdata__lichaamlengte_lengteWaarde=lengte,
+                set__user__userdata__lichaamlengte_lengteDatum=lengtedatum,
+                set__user__userdata__lichaamlengte_positie=lengtepositie)
+    change.reload()
+    return 'lengte veranderd'
+
+
+@app.route('/replacegewichtdata/<username>/<gewicht>/<gewichtdatum>/<gewichtpositie>')
+def replacegewichtdata(username, gewicht, gewichtdatum, gewichtpositie):
+    change = User.objects(User__naamgegevens__contactgegevens__emailAdressen__emailAdres=username) \
+        .update(set__user__userdata__lichaamsgewicht__gewichtWaarde=gewicht,
+                set__user__userdata__lichaamsgewicht_gewichtDatum=gewichtdatum,
+                set__user__userdata__lichaamsgewicht_positie=gewichtpositie)
+    change.reload()
+    return 'gewicht veranderd'
+
 @app.route('/getdata/<username>')
 def getdata(username):
-    if User.objects(User__naamgegevens__contactgegevens__emailAdressen__emailAdres =username):
-        get_data = User.objects(User__naamgegevens__contactgegevens__emailAdressen__emailAdres = username)
+    if User.objects(User__naamgegevens__contactgegevens__emailAdressen__emailAdres=username):
+        get_data = User.objects(User__naamgegevens__contactgegevens__emailAdressen__emailAdres=username)
     else:
-        get_data = Administrator.objects(Administrator__naamgegevens__contactgegevens__emailAdressen__emailAdres =username)
+        get_data = Administrator.objects(Administrator__naamgegevens__contactgegevens__emailAdressen__emailAdres
+                                         =username)
 
     return jsonify(get_data)
 
@@ -92,8 +113,13 @@ def Usergegevens():
         redirect(url_for('sendAdministrator', geslacht=req_geslacht, specialisme=req_specialisme, voornaam=req_voornaam,
                          achternaam=req_achternaam, username=req_username, password=req_password,
                          geboortedatum=req_geboortedatum))
-    elif action == 'replace':
-        print(0)
+    elif action == 'replacelengtdata':
+        redirect(url_for('replacelengtdata', username=req_username, lengte=req_lengte, lengtedatum=req_lengtedatum,
+                         lengtepositie=req_lengtepositie))
+
+    elif action =='replacegewichtdata':
+        redirect(url_for('replacegewichtdata', username=req_username, gewicht=req_gewicht, gewichtdatum=req_gewichtdatum
+                         , gewichtpositie=req_gewichtpositie))
 
     elif action == 'get':
         redirect(url_for('getdata', username=req_username))

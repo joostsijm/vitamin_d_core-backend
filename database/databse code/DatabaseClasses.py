@@ -44,7 +44,6 @@ class GeslachtsnaamUser(me.EmbeddedDocument):
 
 
 class NaamgegevensUser(me.EmbeddedDocument):
-    naamgegevens_id = me.IntField()
     titels = me.StringField()
     voornamen = me.StringField()
     initialen = me.StringField()
@@ -110,6 +109,6 @@ class Schedual(me.Document):
     beschrijving = me.StringField()
     datum = me.DateTimeField()
 
-class Login(me.DocumentField):
-    username = me.ReferenceField(ContactgegevensUser.emailAdressen)
+class Login(me.Document):
+    username = me.EmailField()
     password = me.StringField()
