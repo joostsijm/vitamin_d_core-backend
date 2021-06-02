@@ -59,7 +59,7 @@ def sendName(geslacht, voornaam, achternaam, username, password, geboortedatum, 
 
 @app.route('/replacedata/<username>/<lengte>/<lengtedatum>/<lengtepositie>')
 def replacelengtdata(username, lengte, lengtedatum, lengtepositie):
-    change = User.objects(User__naamgegevens__contactgegevens__emailAdressen__emailAdres=username)\
+    change = User.objects(naamgegevens__contactgegevens__emailAdressen__emailAdres=username)\
         .update(set__user__userdata__lichaamlengte_lengteWaarde=lengte,
                 set__user__userdata__lichaamlengte_lengteDatum=lengtedatum,
                 set__user__userdata__lichaamlengte_positie=lengtepositie)
@@ -69,7 +69,7 @@ def replacelengtdata(username, lengte, lengtedatum, lengtepositie):
 
 @app.route('/replacegewichtdata/<username>/<gewicht>/<gewichtdatum>/<gewichtpositie>')
 def replacegewichtdata(username, gewicht, gewichtdatum, gewichtpositie):
-    change = User.objects(User__naamgegevens__contactgegevens__emailAdressen__emailAdres=username) \
+    change = User.objects(naamgegevens__contactgegevens__emailAdressen__emailAdres=username) \
         .update(set__user__userdata__lichaamsgewicht__gewichtWaarde=gewicht,
                 set__user__userdata__lichaamsgewicht_gewichtDatum=gewichtdatum,
                 set__user__userdata__lichaamsgewicht_positie=gewichtpositie)
@@ -78,13 +78,21 @@ def replacegewichtdata(username, gewicht, gewichtdatum, gewichtpositie):
 
 @app.route('/getdata/<username>')
 def getdata(username):
-    if User.objects(User__naamgegevens__contactgegevens__emailAdressen__emailAdres=username):
-        get_data = User.objects(User__naamgegevens__contactgegevens__emailAdressen__emailAdres=username)
+    if User.objects(naamgegevens__contactgegevens__emailAdressen__emailAdres=username):
+        get_data = User.objects(naamgegevens__contactgegevens__emailAdressen__emailAdres=username)
     else:
-        get_data = Administrator.objects(Administrator__naamgegevens__contactgegevens__emailAdressen__emailAdres
+        get_data = Administrator.objects(naamgegevens__contactgegevens__emailAdressen__emailAdres
                                          =username)
 
     return jsonify(get_data)
+
+
+@app.route('/checklogin/<username>/<password>')
+def checklogin(username, password):
+    if Login.objects(username__exact=username) & Login.objects(password__exact=password)
+        return True
+    else:
+        return False
 
 
 @app.route('/core', methods=['POST'])
@@ -123,3 +131,6 @@ def Usergegevens():
 
     elif action == 'get':
         redirect(url_for('getdata', username=req_username))
+
+    elif action == 'login':
+        redirect(url_for('checklogin', username=req_username, password=req_password))
