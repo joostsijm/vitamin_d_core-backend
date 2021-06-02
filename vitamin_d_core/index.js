@@ -20,12 +20,23 @@ app.get('/', (request, response) => {
     response.render('index')
 });
 
-// Connect to MongoDB
 app.get('/user', (request, response) => {
-    // Optionally the request above could also be done as
+    // get user data
+    // TODO: authentication
     axios.get('http://resource_user/user')
         .then(function (api_response) {
-            response.render('user', { api_response } )
+            // TODO: parse data correctly
+            response.json({
+                'email': api_response.body.email,
+                'firstname': api_response.body.firstname,
+                'lastname': api_response.body.lastname,
+                'password': api_response.body.password,
+                'birthdate': api_response.body.birthdate,
+                'gender': api_response.body.gender,
+                'lenght': api_response.body.lenght,
+                'weight': api_response.body.weight,
+                'dressed': api_response.body.dressed,
+            })
         })
         .catch(function (error) {
             console.log(error);
@@ -33,10 +44,46 @@ app.get('/user', (request, response) => {
 });
 
 app.post('/user', (request, response) => {
-    axios.post('http://resource_user/user', request.body)
-        .then(response.redirect('/user'))
+    // Register new user
+    post_data = {
+        // TODO: format data correctly
+        'email': request.body.email,
+        'firstname': request.body.firstname,
+        'lastname': request.body.lastname,
+        'password': request.body.password,
+        'birthdate': request.body.birthdate,
+        'gender': request.body.gender,
+        'lenght': request.body.lenght,
+        'weight': request.body.weight,
+        'dressed': request.body.dressed,
+    }
+    
+    axios.post('http://resource_user/user', post_data)
+        .then(response.sendStatus(200))
         .catch(function (error) {
             console.log(error);
+            response.sendStatus(400);
+        });
+});
+
+app.post('/login', (request, response) => {
+    // login user
+    post_data = {
+        'email': request.body.email,
+        'password': password,
+    }
+    
+    // TODO: get correct resource user route
+    axios.post('http://resource_user/login', post_data)
+        .then(function (api_response) {
+            // TODO: return correct session
+            response.json({
+                'session': 'zero',
+            })
+        })
+        .catch(function (error) {
+            console.log(error);
+            response.sendStatus(400);
         });
 });
 
