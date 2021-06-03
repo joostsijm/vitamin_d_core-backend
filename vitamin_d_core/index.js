@@ -47,15 +47,15 @@ app.post('/user', (request, response) => {
     // Register new user
     post_data = {
         // TODO: format data correctly
-        'email': request.body.email,
-        'firstname': request.body.firstname,
-        'lastname': request.body.lastname,
+        'geslacht': request.body.gender,
+        'voornaam': request.body.firstname,
+        'achternaam': request.body.lastname,
+        'username': request.body.email,
         'password': request.body.password,
-        'birthdate': request.body.birthdate,
-        'gender': request.body.gender,
-        'lenght': request.body.lenght,
-        'weight': request.body.weight,
-        'dressed': request.body.dressed,
+        'geboortedatum': request.body.birthdate,
+        'lengte': request.body.lenght,
+        'gewicht': request.body.weight,
+        'gewichtpositie': request.body.dressed,
     }
     
     axios.post('http://resource_user/user', post_data)
