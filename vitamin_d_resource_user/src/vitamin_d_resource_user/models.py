@@ -123,5 +123,5 @@ class Schedule(me.Document):
 
 
 class Login(me.Document):
-    login_id = me.ReferenceField(User)
+    username = me.EmailField()
     password = me.StringField()
