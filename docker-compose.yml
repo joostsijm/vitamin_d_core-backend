@@ -1,16 +1,29 @@
 version: '3.9'
 services:
   core:
+    environment:
+      - MONGO_DB
+      - MONGO_HOST
     restart: always
     build: ./vitamin_d_core
     ports:
       - 80:80
 
   scheduler:
+    environment:
+      - FLASK_ENV
+      - FLASK_SECRET_KEY
+      - MONGO_DB
+      - MONGO_HOST
     restart: always
     build: ./vitamin_d_scheduler
         
   resource_user:
+    environment:
+      - FLASK_ENV
+      - FLASK_SECRET_KEY
+      - MONGO_DB
+      - MONGO_HOST
     restart: always
     build: ./vitamin_d_resource_user
 

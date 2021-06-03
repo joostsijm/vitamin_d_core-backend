@@ -5,9 +5,13 @@ main: build
 build:
 	docker-compose build
 
-up:
-	docker-compose up -d
-	docker-compose logs -t
+up: up-dev
+
+up-dev:
+	docker-compose --env-file .env.dev up
+
+up-prod:
+	docker-compose --env-file .env.prod up
 
 down:
 	docker-compose down
