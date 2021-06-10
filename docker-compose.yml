@@ -1,9 +1,6 @@
 version: '3.9'
 services:
   core:
-    environment:
-      - MONGO_DB
-      - MONGO_HOST
     restart: always
     build: ./vitamin_d_core
     ports:
@@ -27,6 +24,12 @@ services:
     restart: always
     build: ./vitamin_d_resource_user
 
+  resource_activity:
+    environment:
+      - MONGO_DB
+      - MONGO_HOST
+    restart: always
+    build: ./vitamin_d_resource_activity
   mongo:
     image: mongo
     command: --quiet --logpath /dev/null
