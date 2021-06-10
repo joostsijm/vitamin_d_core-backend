@@ -22,7 +22,6 @@ app.get('/', (request, response) => {
 
 app.get('/user', (request, response) => {
     // get user data
-    // TODO: authentication
     axios.get('http://resource_user/user')
         .then(function (api_response) {
             // TODO: parse data correctly
@@ -84,6 +83,53 @@ app.post('/login', (request, response) => {
         .catch(function (error) {
             console.log(error);
             response.sendStatus(400);
+        });
+});
+
+app.post('/activity/', (request, response) => {
+    // login user
+    post_data = {
+        'datetime': request.body.datetime,
+        'distance': request.body.distance,
+    }
+    
+    axios.post('http://resource_activity/', post_data)
+        .then(function (api_response) {
+            response.sendStatus(200);
+        })
+        .catch(function (error) {
+            console.log(error);
+            response.sendStatus(400);
+        });
+});
+
+app.get('/activity/', (request, response) => {
+    // get activity data
+    axios.get('http://resource_activity/')
+        .then(function (activity) {
+            response.json({
+                'id': activity.body.id,
+                'datetime': activity.body.datetime,
+                'distance': activity.body.distance,
+            })
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+});
+
+app.get('/activity/history', (request, response) => {
+    // get activity data
+    axios.get('http://resource_activity/history')
+        .then(function (activity) {
+            response.json({
+                'id': activity.body.id,
+                'datetime': activity.body.datetime,
+                'distance': activity.body.distance,
+            })
+        })
+        .catch(function (error) {
+            console.log(error);
         });
 });
 
