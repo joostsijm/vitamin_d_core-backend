@@ -15,6 +15,15 @@ services:
     restart: on-failure
     build: ./vitamin_d_scheduler
 
+  resource_auth:
+    environment:
+      - FLASK_ENV
+      - FLASK_SECRET_KEY
+      - MONGO_DB
+      - MONGO_HOST
+    restart: on-failure
+    build: ./vitamin_d_resource_auth
+
   resource_user:
     environment:
       - FLASK_ENV
@@ -30,6 +39,7 @@ services:
       - MONGO_HOST
     restart: on-failure
     build: ./vitamin_d_resource_activity
+
   mongo:
     image: mongo
     command: --quiet --logpath /dev/null

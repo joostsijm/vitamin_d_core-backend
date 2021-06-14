@@ -60,18 +60,13 @@ class NaamgegevensUser(me.EmbeddedDocument):
     contactgegevens = me.EmbeddedDocumentField(ContactgegevensUser)
 
 
-class Session(me.EmbeddedDocument):
-    code = me.StringField()
-
-
 class Administrator(me.Document):
     administrator_id = me.IntField()
     geboortedatum = me.DateTimeField()
-    geslacht = me.StringField(choices=GESLACHTSSOORT)   #'UN', 'M', 'F', 'UNK'
+    geslacht = me.StringField(choices=GESLACHTSSOORT)           #'UN', 'M', 'F', 'UNK'
     specialisme = me.StringField()
-    zorgverlenerRol = me.StringField(choices=ZORGVERLENERROL) #'RESP', 'REF', 'PRF', 'SPRF', 'CON', 'ATND', 'OTH'
+    zorgverlenerRol = me.StringField(choices=ZORGVERLENERROL)   #'RESP', 'REF', 'PRF', 'SPRF', 'CON', 'ATND', 'OTH'
     naamgegevens = me.EmbeddedDocumentField(NaamgegevensUser)
-    session = me.EmbeddedDocumentField(Session)
     username = me.EmailField()
     password = me.StringField()
 
@@ -101,7 +96,6 @@ class User(me.Document):
     geslacht = me.StringField(choices=GESLACHTSSOORT)   #'UN', 'M', 'F', 'UNK'
     naamgegevens = me.EmbeddedDocumentField(NaamgegevensUser)
     userdata = me.EmbeddedDocumentField(UserData)
-    session = me.EmbeddedDocumentField(Session)
     username = me.EmailField()
     password = me.StringField()
 #

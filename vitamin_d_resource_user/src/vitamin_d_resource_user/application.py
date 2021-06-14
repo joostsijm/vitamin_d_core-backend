@@ -7,38 +7,47 @@ from flask import Blueprint, abort, request, jsonify, Response
 
 from vitamin_d_resource_user.models import User, NaamgegevensUser, \
     GeslachtsnaamUser, ContactgegevensUser, EmailAdressenUser, \
-    Administrator, Lichaamsgewicht, Lichaamslengte, Session 
+    Administrator, Lichaamsgewicht, Lichaamslengte
 
 
 blueprint = Blueprint('application', __name__)
 
-@blueprint.route('/', methods=['GET'])
-def get():
-    """Get"""
-    session_code = request.cookies.get('session_code')
-    user = User.objects(User__session__code=session_code)
+@blueprint.route('/user/username', methods=['GET'])
+def get(username):
+    """Get user"""
+    user = User.objects(User__username=username)
     if not user:
-        user = Administrator.objects(User__session__code=session_code)
+        user = Administrator.objects(User__username=username)
     return jsonify(user)
 
 
-@blueprint.route('/', methods=['POST'])
+@blueprint.route('/user', methods=['POST'])
 def post():
-    """Post"""
-    geslacht = request.json['geslacht']
-    voornaam = request.json['voornaam']
-    achternaam = request.json['achternaam']
-    username = request.json['username']
-    password = request.json['password']
-    geboortedatum = request.json['geboortedatum']
-    lengte = request.json['lengte']
-    lengtedatum = datetime.now()
-    lengtepositie = request.json['lengtepositie']
-    gewicht = request.json['gewicht']
-    gewichtdatum = datetime.now()
-    gewichtpositie = request.json['gewichtpositie']
+    """Post user"""
+    print('HAHAHAHA')
+    print(request.json)
+    try:
+        geslacht = request.json['geslacht']
+        voornaam = request.json['voornaam']
+        achternaam = request.json['achternaam']
+        username = request.json['username']
+        password = request.json['password']
+        geboortedatum = request.json['geboortedatum']
+        lengte = request.json['lengte']
+        lengtedatum = datetime.now()
+        lengtepositie = request.json['lengtepositie']
+        gewicht = request.json['gewicht']
+        gewichtdatum = datetime.now()
+        gewichtpositie = request.json['gewichtpositie']
+    except KeyError:
+        return Response('missing parameters', status=422)
 
-    user = User(geslacht=geslacht, geboortedatum=geboortedatum, username=username, password=password)
+    user = User(
+            geslacht=geslacht,
+            geboortedatum=geboortedatum,
+            username=username,
+            password=password
+        )
     user.naamgegevens = NaamgegevensUser(voornamen=voornaam)
     user.naamgegevens.geslachtsnaam = GeslachtsnaamUser(achternaam=achternaam)
     user.naamgegevens.contactgegevens = ContactgegevensUser()
@@ -57,27 +66,9 @@ def post():
     return Response(status=200)
 
 
-@blueprint.route('/login', methods=['POST'])
-def post_login():
-    """Post login"""
-    username = request.json['username']
-    user = User.objects(User__username=username)
-    if user:
-        password = request.json['password']
-        if user.password == password:
-            session_code = secrets.token_urlsafe()
-            user.session = Session(code=session_code)
-            user.save()
-            return jsonify(session_code)
-    return abort(401)
-
-
 @blueprint.route('/admin', methods=['POST'])
 def post_admin():
     """Manipulate admin data"""
-    session_code = request.cookies.get('session_code')
-    if not Administrator.objects(User__session__code=session_code):
-        return abort(401)
     geslacht = request.json['geslacht']
     voornaam = request.json['voornaam']
     achternaam = request.json['achternaam']
@@ -89,7 +80,7 @@ def post_admin():
     administrator = Administrator(
             geslacht=geslacht,
             geboortedatum=geboortedatum,
-            specialisme=specialisme
+            specialisme=specialisme,
             username=username,
             password=password
         )

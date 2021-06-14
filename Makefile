@@ -18,3 +18,5 @@ down:
 
 logs:
 	docker-compose logs -tf
+
+restart: down build up
