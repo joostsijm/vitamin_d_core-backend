@@ -1,10 +1,7 @@
 version: '3.9'
 services:
   core:
-    environment:
-      - MONGO_DB
-      - MONGO_HOST
-    restart: always
+    restart: on-failure
     build: ./vitamin_d_core
     ports:
       - 8001:80
@@ -15,18 +12,24 @@ services:
       - FLASK_SECRET_KEY
       - MONGO_DB
       - MONGO_HOST
-    restart: always
+    restart: on-failure
     build: ./vitamin_d_scheduler
-        
+
   resource_user:
     environment:
       - FLASK_ENV
       - FLASK_SECRET_KEY
       - MONGO_DB
       - MONGO_HOST
-    restart: always
+    restart: on-failure
     build: ./vitamin_d_resource_user
 
+  resource_activity:
+    environment:
+      - MONGO_DB
+      - MONGO_HOST
+    restart: on-failure
+    build: ./vitamin_d_resource_activity
   mongo:
     image: mongo
     command: --quiet --logpath /dev/null

@@ -16,26 +16,25 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: false }));
 
 // Connect to MongoDB
-app.get('/', (request, response) => {
-    response.render('index')
+app.get('/', (req, res) => {
+    res.render('index')
 });
 
-app.get('/user', (request, response) => {
+app.get('/user', (req, res) => {
     // get user data
-    // TODO: authentication
     axios.get('http://resource_user/user')
-        .then(function (api_response) {
+        .then(function (api_res) {
             // TODO: parse data correctly
-            response.json({
-                'email': api_response.body.email,
-                'firstname': api_response.body.firstname,
-                'lastname': api_response.body.lastname,
-                'password': api_response.body.password,
-                'birthdate': api_response.body.birthdate,
-                'gender': api_response.body.gender,
-                'lenght': api_response.body.lenght,
-                'weight': api_response.body.weight,
-                'dressed': api_response.body.dressed,
+            res.json({
+                'email': api_res.body.email,
+                'firstname': api_res.body.firstname,
+                'lastname': api_res.body.lastname,
+                'password': api_res.body.password,
+                'birthdate': api_res.body.birthdate,
+                'gender': api_res.body.gender,
+                'lenght': api_res.body.lenght,
+                'weight': api_res.body.weight,
+                'dressed': api_res.body.dressed,
             })
         })
         .catch(function (error) {
@@ -43,47 +42,94 @@ app.get('/user', (request, response) => {
         });
 });
 
-app.post('/user', (request, response) => {
+app.post('/user', (req, res) => {
     // Register new user
     post_data = {
         // TODO: format data correctly
-        'geslacht': request.body.gender,
-        'voornaam': request.body.firstname,
-        'achternaam': request.body.lastname,
-        'username': request.body.email,
-        'password': request.body.password,
-        'geboortedatum': request.body.birthdate,
-        'lengte': request.body.lenght,
-        'gewicht': request.body.weight,
-        'gewichtpositie': request.body.dressed,
+        'geslacht': req.body.gender,
+        'voornaam': req.body.firstname,
+        'achternaam': req.body.lastname,
+        'username': req.body.email,
+        'password': req.body.password,
+        'geboortedatum': req.body.birthdate,
+        'lengte': req.body.lenght,
+        'gewicht': req.body.weight,
+        'gewichtpositie': req.body.dressed,
     }
     
     axios.post('http://resource_user/user', post_data)
-        .then(response.sendStatus(200))
+        .then(res.sendStatus(200))
         .catch(function (error) {
             console.log(error);
-            response.sendStatus(400);
+            res.sendStatus(400);
         });
 });
 
-app.post('/login', (request, response) => {
+app.post('/login', (req, res) => {
     // login user
     post_data = {
-        'email': request.body.email,
+        'email': req.body.email,
         'password': password,
     }
     
     // TODO: get correct resource user route
     axios.post('http://resource_user/login', post_data)
-        .then(function (api_response) {
+        .then(function (api_res) {
             // TODO: return correct session
-            response.json({
+            res.json({
                 'session': 'zero',
             })
         })
         .catch(function (error) {
             console.log(error);
-            response.sendStatus(400);
+            res.sendStatus(400);
+        });
+});
+
+app.post('/activity/', (req, res) => {
+    // login user
+    post_data = {
+        'datetime': req.body.datetime,
+        'distance': req.body.distance,
+    }
+    
+    axios.post('http://resource_activity/', post_data)
+        .then(function (api_res) {
+            res.sendStatus(200);
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.sendStatus(400);
+        });
+});
+
+app.get('/activity/', (req, res) => {
+    // get activity data
+    axios.get('http://resource_activity/')
+        .then(function (activity) {
+            res.json({
+                'id': activity.body.id,
+                'datetime': activity.body.datetime,
+                'distance': activity.body.distance,
+            })
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+});
+
+app.get('/activity/history', (req, res) => {
+    // get activity data
+    axios.get('http://resource_activity/history')
+        .then(function (activity) {
+            res.json({
+                'id': activity.body.id,
+                'datetime': activity.body.datetime,
+                'distance': activity.body.distance,
+            })
+        })
+        .catch(function (error) {
+            console.log(error);
         });
 });
 
