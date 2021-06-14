@@ -9,4 +9,4 @@ RUN pip3 install .
 
 COPY production.env .env
 
-CMD "vitamin_d_resource_user"
+CMD "vitamin_d_fitbit"
