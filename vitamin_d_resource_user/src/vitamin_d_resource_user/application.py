@@ -1,47 +1,44 @@
 """Application blueprint"""
 
+import secrets
 from datetime import datetime
 
 from flask import Blueprint, abort, request, jsonify, Response
 
 from vitamin_d_resource_user.models import User, NaamgegevensUser, \
     GeslachtsnaamUser, ContactgegevensUser, EmailAdressenUser, \
-    Administrator, Lichaamsgewicht, Lichaamslengte, Login
+    Administrator, Lichaamsgewicht, Lichaamslengte, Session 
 
 
 blueprint = Blueprint('application', __name__)
 
-@blueprint.route('/<username>', methods=['GET'])
-def getdata(username):
-    """Get user"""
-    if User.objects(User__naamgegevens__contactgegevens__emailAdressen__emailAdres=username):
-        user = User.objects(
-                User__naamgegevens__contactgegevens__emailAdressen__emailAdres=username
-            )
-    else:
-        user = Administrator.objects(
-                Administrator__naamgegevens__contactgegevens__emailAdressen__emailAdres=username
-            )
+@blueprint.route('/', methods=['GET'])
+def get():
+    """Get"""
+    session_code = request.cookies.get('session_code')
+    user = User.objects(User__session__code=session_code)
+    if not user:
+        user = Administrator.objects(User__session__code=session_code)
     return jsonify(user)
 
 
 @blueprint.route('/', methods=['POST'])
-def post_user():
-    """Post user"""
-    geslacht = request.form['geslacht']
-    voornaam = request.form['voornaam']
-    achternaam = request.form['achternaam']
-    username = request.form['username']
-    password = request.form['password']
-    geboortedatum = request.form['geboortedatum']
-    lengte = request.form['lengte']
+def post():
+    """Post"""
+    geslacht = request.json['geslacht']
+    voornaam = request.json['voornaam']
+    achternaam = request.json['achternaam']
+    username = request.json['username']
+    password = request.json['password']
+    geboortedatum = request.json['geboortedatum']
+    lengte = request.json['lengte']
     lengtedatum = datetime.now()
-    lengtepositie = request.form['lengtepositie']
-    gewicht = request.form['gewicht']
+    lengtepositie = request.json['lengtepositie']
+    gewicht = request.json['gewicht']
     gewichtdatum = datetime.now()
-    gewichtpositie = request.form['gewichtpositie']
+    gewichtpositie = request.json['gewichtpositie']
 
-    user = User(geslacht=geslacht, geboortedatum=geboortedatum)
+    user = User(geslacht=geslacht, geboortedatum=geboortedatum, username=username, password=password)
     user.naamgegevens = NaamgegevensUser(voornamen=voornaam)
     user.naamgegevens.geslachtsnaam = GeslachtsnaamUser(achternaam=achternaam)
     user.naamgegevens.contactgegevens = ContactgegevensUser()
@@ -57,26 +54,44 @@ def post_user():
             positie=gewichtpositie
         )
     user.save()
-    login = Login(username=username, password=password)
-    login.save()
     return Response(status=200)
 
 
+@blueprint.route('/login', methods=['POST'])
+def post_login():
+    """Post login"""
+    username = request.json['username']
+    user = User.objects(User__username=username)
+    if user:
+        password = request.json['password']
+        if user.password == password:
+            session_code = secrets.token_urlsafe()
+            user.session = Session(code=session_code)
+            user.save()
+            return jsonify(session_code)
+    return abort(401)
+
+
 @blueprint.route('/admin', methods=['POST'])
-def admin_post():
+def post_admin():
     """Manipulate admin data"""
-    geslacht = request.form['geslacht']
-    voornaam = request.form['voornaam']
-    achternaam = request.form['achternaam']
-    username = request.form['username']
-    password = request.form['password']
-    geboortedatum = request.form['geboortedatum']
-    specialisme = request.form['specialisme']
+    session_code = request.cookies.get('session_code')
+    if not Administrator.objects(User__session__code=session_code):
+        return abort(401)
+    geslacht = request.json['geslacht']
+    voornaam = request.json['voornaam']
+    achternaam = request.json['achternaam']
+    username = request.json['username']
+    password = request.json['password']
+    geboortedatum = request.json['geboortedatum']
+    specialisme = request.json['specialisme']
 
     administrator = Administrator(
             geslacht=geslacht,
             geboortedatum=geboortedatum,
             specialisme=specialisme
+            username=username,
+            password=password
         )
     administrator.naamgegevens = NaamgegevensUser(voornamen=voornaam)
     administrator.naamgegevens.geslachtsnaam = \
@@ -85,8 +100,6 @@ def admin_post():
     administrator.naamgegevens.contactgegevens.emailAdressen = \
             EmailAdressenUser(emailAdres=username)
     administrator.save()
-    login = Login(username=username, password=password)
-    login.save()
     return Response(status=200)
 
 

@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 
 app.get('/user', (req, res) => {
     // get user data
-    axios.get('http://resource_user/user')
+    axios.get('http://resource_user/')
         .then(function (api_res) {
             // TODO: parse data correctly
             res.json({

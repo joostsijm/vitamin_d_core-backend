@@ -16,13 +16,13 @@ POSITIEKEUZE = ('staande positie', 'liggende positie')
 class TelefoonnummersUser(me.EmbeddedDocument):
     telefoonnummer = me.IntField()
     toelichting = me.StringField()
-    telecomType = me.StringField(choices=TELECOMTYPE)  #'LL', 'FAX', 'MC', 'PG'
-    nummerSoort = me.StringField(choices=NUMMERSOORT) #'HP', 'TMP', 'WP'
+    telecomType = me.StringField(choices=TELECOMTYPE)   #'LL', 'FAX', 'MC', 'PG'
+    nummerSoort = me.StringField(choices=NUMMERSOORT)   #'HP', 'TMP', 'WP'
 
 
 class EmailAdressenUser(me.EmbeddedDocument):
     emailAdres = me.EmailField()
-    emailSoort = me.StringField(choices=EMAILSOORT) #'HP', 'WP'
+    emailSoort = me.StringField(choices=EMAILSOORT)     #'HP', 'WP'
 
 
 class ContactgegevensUser(me.EmbeddedDocument):
@@ -38,10 +38,10 @@ class AdressgegevensUser(me.EmbeddedDocument):
     aanduidingBijNummer = me.StringField()
     woonplaats = me.StringField()
     gemeente = me.StringField()
-    land = me.StringField(choices=LANDSOORT) #'6030', 'NL'
+    land = me.StringField(choices=LANDSOORT)            #'6030', 'NL'
     postcode = me.StringField()
     aditioneleInformatie = me.StringField()
-    adressSoort = me.StringField(choices=ADRESSSOORT) #'PST', 'HP', 'PHYS', 'TMP', 'WP', 'HV'
+    adressSoort = me.StringField(choices=ADRESSSOORT)   #'PST', 'HP', 'PHYS', 'TMP', 'WP', 'HV'
 
 
 class GeslachtsnaamUser(me.EmbeddedDocument):
@@ -58,36 +58,36 @@ class NaamgegevensUser(me.EmbeddedDocument):
     adressgegevens = me.EmbeddedDocumentField(AdressgegevensUser)
     geslachtsnaam = me.EmbeddedDocumentField(GeslachtsnaamUser)
     contactgegevens = me.EmbeddedDocumentField(ContactgegevensUser)
-    # TelefoonnummersUser()
-    # EmailAdressenUser()
+
+
+class Session(me.EmbeddedDocument):
+    code = me.StringField()
 
 
 class Administrator(me.Document):
     administrator_id = me.IntField()
     geboortedatum = me.DateTimeField()
-    geslacht = me.StringField(choices=GESLACHTSSOORT) #'UN', 'M', 'F', 'UNK'
+    geslacht = me.StringField(choices=GESLACHTSSOORT)   #'UN', 'M', 'F', 'UNK'
     specialisme = me.StringField()
     zorgverlenerRol = me.StringField(choices=ZORGVERLENERROL) #'RESP', 'REF', 'PRF', 'SPRF', 'CON', 'ATND', 'OTH'
     naamgegevens = me.EmbeddedDocumentField(NaamgegevensUser)
-    # AdressgegevensUser()
-    # GeslachtsnaamUser()
-    # ContactgegevensUser()
-    # TelefoonnummersUser()
-    # EmailAdressenUser()
+    session = me.EmbeddedDocumentField(Session)
+    username = me.EmailField()
+    password = me.StringField()
 
 
 class Lichaamsgewicht(me.EmbeddedDocument):
     gewichtWaarde = me.IntField()
     gewichtDatum = me.DateTimeField()
     toelichting = me.StringField()
-    kleding = me.StringField(choices=KLEDINGKEUZE) #'UNDRESSED', 'MINIMAL', 'FULL', 'DIAPER'
+    kleding = me.StringField(choices=KLEDINGKEUZE)      #'UNDRESSED', 'MINIMAL', 'FULL', 'DIAPER'
 
 
 class Lichaamslengte(me.EmbeddedDocument):
     lengteWaarde = me.IntField()
     lengteDatum = me.DateTimeField()
     toelichting = me.StringField()
-    positie = me.StringField(choices=POSITIEKEUZE) #'staande positie', 'liggende positie'
+    positie = me.StringField(choices=POSITIEKEUZE)      #'staande positie', 'liggende positie'
 
 
 class UserData(me.EmbeddedDocument):
@@ -98,30 +98,21 @@ class UserData(me.EmbeddedDocument):
 class User(me.Document):
     user_id = me.IntField()
     geboortedatum = me.DateTimeField()
-    geslacht = me.StringField(choices=GESLACHTSSOORT) #'UN', 'M', 'F', 'UNK'
+    geslacht = me.StringField(choices=GESLACHTSSOORT)   #'UN', 'M', 'F', 'UNK'
     naamgegevens = me.EmbeddedDocumentField(NaamgegevensUser)
-    # AdressgegevensUser()
-    # GeslachtsnaamUser()
-    # ContactgegevensUser()
-    # TelefoonnummersUser()
-    # EmailAdressenUser()
     userdata = me.EmbeddedDocumentField(UserData)
-    # Lichaamsgewicht()
-    # Lichaamslengte()
-
-
-class Questionair(me.Document):
-    questionair_id = me.ReferenceField(User)
-    question = me.StringField()
-    answer = me.StringField()
-
-
-class Schedule(me.Document):
-    schedule_id = me.ReferenceField(User)
-    beschrijving = me.StringField()
-    datum = me.DateTimeField()
-
-
-class Login(me.Document):
+    session = me.EmbeddedDocumentField(Session)
     username = me.EmailField()
     password = me.StringField()
+#
+#
+# class Questionair(me.Document):
+#     questionair_id = me.ReferenceField(User)
+#     question = me.StringField()
+#     answer = me.StringField()
+#
+#
+# class Schedule(me.Document):
+#     schedule_id = me.ReferenceField(User)
+#     beschrijving = me.StringField()
+#     datum = me.DateTimeField()
