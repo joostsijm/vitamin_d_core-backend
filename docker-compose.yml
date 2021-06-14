@@ -7,7 +7,7 @@ services:
     restart: always
     build: ./vitamin_d_core
     ports:
-      - 80:80
+      - 8001:80
 
   scheduler:
     environment:
