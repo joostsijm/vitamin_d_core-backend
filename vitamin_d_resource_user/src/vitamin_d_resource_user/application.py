@@ -89,6 +89,18 @@ def post_admin():
     return Response(status=200)
 
 
+@blueprint.route('/sendactiviteiten/<username>/<activiteit>/<geplandeafstand>')
+def sendactiviteiten(username, activiteit, geplandeafstand):
+    sendactiviteit = Schedule(username=username, activiteit=activiteit, geplandeafstand=geplandeafstand)
+    sendactiviteit.save()
+
+
+@blueprint.route('/getactiviteiten/<username>/<activiteit>/<datum>')
+def getactiviteiten(username, activiteit, datum):
+    schedule = Schedule.objects(username=username, activiteit=activiteit, activiteitDatum=datum)
+    return jsonify(schedule)
+
+
 @blueprint.errorhandler(404)
 def page_not_found(error):
     """Handle 404 errors"""
