@@ -66,11 +66,13 @@ app.post('/user', (req, res, next) => {
     }
     
     axios.post('http://resource_user/user', post_data)
-        .then(res.sendStatus(200))
-        .catch(function (error) {
-            res.status(500);
-            return next(error);
-        });
+        .then(response => {
+            if (response.status > 200) {
+                res.status(response.status).send(response)
+            }
+            res.status(200).end()
+        })
+        .catch(next)
 });
 
 app.post('/login', (req, res) => {
