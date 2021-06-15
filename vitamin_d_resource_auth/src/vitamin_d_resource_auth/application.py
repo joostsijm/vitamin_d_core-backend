@@ -12,12 +12,12 @@ blueprint = Blueprint('application', __name__)
 @blueprint.route('/auth', methods=['POST'])
 def post_auth():
     """Post auth, check authentication"""
-    user = User.objects(User__session__code=request.json['session_code'])
+    user = User.objects(session__code=request.json['session_code']).first()
     if user:
-        return user.username
-    admin = Administrator.objects(Administrator__session__code=request.json['session_code'])
+        return jsonify({'username': user.username})
+    admin = Administrator.objects(session__code=request.json['session_code']).first()
     if admin:
-        return admin.username
+        return jsonify({'username': admin.username})
     return abort(401)
 
 
@@ -25,10 +25,7 @@ def post_auth():
 def post_login():
     """Post login"""
     username = request.json['username']
-#    try:
     user = User.objects(username=username).first()
-#    except Exception as error:
-#        return Response(str(error), status=401)
     if user.password == request.json['password']:
         session_code = secrets.token_urlsafe()
         user.session = Session(code=session_code)

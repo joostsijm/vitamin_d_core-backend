@@ -26,20 +26,20 @@ app.get('/', (req, res) => {
 app.get('/user', (req, res) => {
     // get user data
     session_code = req.cookies.session_code
-    axios.post('http://resource_auth/auth', {'session_code': session_cookie})
+    axios.post('http://resource_auth/auth', {'session_code': session_code})
         .then(function (auth_res) {
-            axios.get('http://resource_user/user/' + auth_res.body.username)
+            axios.get('http://resource_user/user/' + auth_res.data.username)
                 .then(function (api_res) {
                     res.json({
-                        'firstname': api_res.body.firstname,
-                        'lastname': api_res.body.lastname,
-                        'username': api_res.body.username,
-                        'password': api_res.body.password,
-                        'birthdate': api_res.body.birthdate,
-                        'gender': api_res.body.gender,
-                        'lenght': api_res.body.lenght,
-                        'weight': api_res.body.weight,
-                        'dressed': api_res.body.dressed,
+                        'firstname': api_res.data.firstname,
+                        'lastname': api_res.data.lastname,
+                        'username': api_res.data.username,
+                        'password': api_res.data.password,
+                        'birthdate': api_res.data.birthdate,
+                        'gender': api_res.data.gender,
+                        'lenght': api_res.data.lenght,
+                        'weight': api_res.data.weight,
+                        'dressed': api_res.data.dressed,
                     })
                 })
                 .catch(function (error) {
