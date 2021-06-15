@@ -4,9 +4,11 @@ FROM python:3.9-slim
 
 WORKDIR /usr/src/app
 
-COPY . .
-RUN pip3 install .
+COPY src/vitamin_d_fitbit/__main__.py src/vitamin_d_resource_user/__main__.py
+COPY README.md README.md
+COPY setup.py setup.py
+RUN pip3 install -e .
 
-COPY production.env .env
+COPY . .
 
 CMD "vitamin_d_fitbit"
