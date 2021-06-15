@@ -89,14 +89,17 @@ def post_admin():
     return Response(status=200)
 
 
-@blueprint.route('/sendactiviteiten/<username>/<activiteit>/<geplandeafstand>')
+@blueprint.route('/sendactiviteiten/username/activiteit/geplandeafstand', methods=['POST'])
 def sendactiviteiten(username, activiteit, geplandeafstand):
+    """Post schedule from user"""
     sendactiviteit = Schedule(username=username, activiteit=activiteit, geplandeafstand=geplandeafstand)
     sendactiviteit.save()
+    Response(status=200)
 
 
-@blueprint.route('/getactiviteiten/<username>/<activiteit>/<datum>')
+@blueprint.route('/getactiviteiten/username/activiteit/datum', methods=['GET'])
 def getactiviteiten(username, activiteit, datum):
+    """Get schedule from user"""
     schedule = Schedule.objects(username=username, activiteit=activiteit, activiteitDatum=datum)
     return jsonify(schedule)
 
