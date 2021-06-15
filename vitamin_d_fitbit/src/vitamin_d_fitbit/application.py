@@ -4,6 +4,8 @@ from flask import Blueprint, abort
 
 from vitamin_d_fitbit.fitapi import fitapi
 
+from vitamin_d_resource_user/vitamin_d_resource_user.models import Schedule
+
 
 blueprint = Blueprint('application', __name__)
 
@@ -31,13 +33,6 @@ def afstand(username, activiteit, datum):
         return True
     else:
         return False
-
-
-# totaldistance()
-# distancewalked()
-# distanceran()
-# distancebiked()
-# distanceswam()
 
 
 @blueprint.errorhandler(404)
