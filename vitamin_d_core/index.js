@@ -31,9 +31,9 @@ app.get('/user', (req, res) => {
             axios.get('http://resource_user/user/' + auth_res.body.username)
                 .then(function (api_res) {
                     res.json({
-                        'email': api_res.body.email,
                         'firstname': api_res.body.firstname,
                         'lastname': api_res.body.lastname,
+                        'username': api_res.body.username,
                         'password': api_res.body.password,
                         'birthdate': api_res.body.birthdate,
                         'gender': api_res.body.gender,
@@ -57,38 +57,43 @@ app.post('/user', (req, res, next) => {
         'geslacht': req.body.gender,
         'voornaam': req.body.firstname,
         'achternaam': req.body.lastname,
-        'username': req.body.email,
+        'username': req.body.username,
         'password': req.body.password,
         'geboortedatum': req.body.birthdate,
         'lengte': req.body.lenght,
+        'lengtepositie': req.body.lenghtposition,
         'gewicht': req.body.weight,
         'gewichtpositie': req.body.dressed,
     }
     
     axios.post('http://resource_user/user', post_data)
         .then(response => {
-            if (response.status > 200) {
-                res.status(response.status).send(response)
+            if (response.status != 200) {
+                res.status(response.status).send(response.body)
             }
             res.status(200).end()
         })
-        .catch(next)
+        .catch(error => {
+            res.status(error.response.status).send(error.response.body)
+        });
+
 });
 
 app.post('/login', (req, res) => {
     // login user
     post_data = {
-        'email': req.body.email,
-        'password': password,
+        'username': req.body.username,
+        'password': req.body.password,
     }
     
     // TODO: get correct resource user route
-    axios.post('http://resource_user/login', post_data)
+    axios.post('http://resource_auth/login', post_data)
         .then(function (api_res) {
-            // TODO: return correct session
-            res.json({
-                'session': 'zero',
-            })
+            console.log(api_res)
+            if (response.status != 200) {
+                res.status(response.status).send(response.body)
+            }
+            res.json(api_res)
         })
         .catch(function (error) {
             res.status(500).send(error.message);

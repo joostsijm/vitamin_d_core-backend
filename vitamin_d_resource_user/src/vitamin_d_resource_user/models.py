@@ -96,7 +96,7 @@ class User(me.Document):
     geslacht = me.StringField(choices=GESLACHTSSOORT)   #'UN', 'M', 'F', 'UNK'
     naamgegevens = me.EmbeddedDocumentField(NaamgegevensUser)
     userdata = me.EmbeddedDocumentField(UserData)
-    username = me.EmailField()
+    username = me.EmailField(unique=True)
     password = me.StringField()
 #
 #

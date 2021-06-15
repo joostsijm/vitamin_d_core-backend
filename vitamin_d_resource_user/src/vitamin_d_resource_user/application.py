@@ -1,13 +1,12 @@
 """Application blueprint"""
 
-import secrets
 from datetime import datetime
 
 from flask import Blueprint, abort, request, jsonify, Response
 
 from vitamin_d_resource_user.models import User, NaamgegevensUser, \
     GeslachtsnaamUser, ContactgegevensUser, EmailAdressenUser, \
-    Administrator, Lichaamsgewicht, Lichaamslengte
+    Administrator, UserData, Lichaamsgewicht, Lichaamslengte
 
 
 blueprint = Blueprint('application', __name__)
@@ -24,23 +23,18 @@ def get(username):
 @blueprint.route('/user', methods=['POST'])
 def post():
     """Post user"""
-    print('HAHAHAHA')
-    print(request.json)
-    try:
-        geslacht = request.json['geslacht']
-        voornaam = request.json['voornaam']
-        achternaam = request.json['achternaam']
-        username = request.json['username']
-        password = request.json['password']
-        geboortedatum = request.json['geboortedatum']
-        lengte = request.json['lengte']
-        lengtedatum = datetime.now()
-        lengtepositie = request.json['lengtepositie']
-        gewicht = request.json['gewicht']
-        gewichtdatum = datetime.now()
-        gewichtpositie = request.json['gewichtpositie']
-    except KeyError:
-        return Response('missing parameters', status=422)
+    geslacht = request.json['geslacht']
+    voornaam = request.json['voornaam']
+    achternaam = request.json['achternaam']
+    username = request.json['username']
+    password = request.json['password']
+    geboortedatum = request.json['geboortedatum']
+    lengte = request.json['lengte']
+    lengtedatum = datetime.now()
+    lengtepositie = request.json['lengtepositie']
+    gewicht = request.json['gewicht']
+    gewichtdatum = datetime.now()
+    kleding = request.json['gewichtpositie']
 
     user = User(
             geslacht=geslacht,
@@ -52,6 +46,7 @@ def post():
     user.naamgegevens.geslachtsnaam = GeslachtsnaamUser(achternaam=achternaam)
     user.naamgegevens.contactgegevens = ContactgegevensUser()
     user.naamgegevens.contactgegevens.emailAdressen = EmailAdressenUser(emailAdres=username)
+    user.userdata = UserData()
     user.userdata.lichaamslengte = Lichaamslengte(
             lengteWaarde=lengte,
             lengteDatum=lengtedatum,
@@ -60,7 +55,7 @@ def post():
     user.userdata.lichaamsgewicht = Lichaamsgewicht(
             gewichtWaarde=gewicht,
             gewichtDatum=gewichtdatum,
-            positie=gewichtpositie
+            kleding=kleding
         )
     user.save()
     return Response(status=200)
