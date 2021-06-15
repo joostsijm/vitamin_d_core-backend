@@ -3,7 +3,7 @@
 import sys
 import time
 
-from vitamin_d_resource_user import create_app
+from vitamin_d_questionair import create_app
 
 
 def main():

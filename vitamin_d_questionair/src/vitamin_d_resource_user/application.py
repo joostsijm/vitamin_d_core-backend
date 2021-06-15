@@ -2,107 +2,28 @@
 
 from datetime import datetime
 
-from flask import Blueprint, abort, request, jsonify, Response
+from flask import Blueprint, abort, jsonify, Response
 
-from vitamin_d_resource_user.models import User, NaamgegevensUser, \
-    GeslachtsnaamUser, ContactgegevensUser, EmailAdressenUser, \
-    Administrator, UserData, Lichaamsgewicht, Lichaamslengte, \
-    Schedule
+from vitamin_d_questionair.models import Questionair
 
 
 blueprint = Blueprint('application', __name__)
 
-@blueprint.route('/user/username', methods=['GET'])
-def get(username):
-    """Get user"""
-    user = User.objects(User__username=username)
-    if not user:
-        user = Administrator.objects(User__username=username)
-    return jsonify(user)
 
-
-@blueprint.route('/user', methods=['POST'])
-def post():
-    """Post user"""
-    geslacht = request.json['geslacht']
-    voornaam = request.json['voornaam']
-    achternaam = request.json['achternaam']
-    username = request.json['username']
-    password = request.json['password']
-    geboortedatum = request.json['geboortedatum']
-    lengte = request.json['lengte']
-    lengtedatum = datetime.now()
-    lengtepositie = request.json['lengtepositie']
-    gewicht = request.json['gewicht']
-    gewichtdatum = datetime.now()
-    kleding = request.json['gewichtpositie']
-
-    user = User(
-            geslacht=geslacht,
-            geboortedatum=geboortedatum,
-            username=username,
-            password=password
-        )
-    user.naamgegevens = NaamgegevensUser(voornamen=voornaam)
-    user.naamgegevens.geslachtsnaam = GeslachtsnaamUser(achternaam=achternaam)
-    user.naamgegevens.contactgegevens = ContactgegevensUser()
-    user.naamgegevens.contactgegevens.emailAdressen = EmailAdressenUser(emailAdres=username)
-    user.userdata = UserData()
-    user.userdata.lichaamslengte = Lichaamslengte(
-            lengteWaarde=lengte,
-            lengteDatum=lengtedatum,
-            positie=lengtepositie
-        )
-    user.userdata.lichaamsgewicht = Lichaamsgewicht(
-            gewichtWaarde=gewicht,
-            gewichtDatum=gewichtdatum,
-            kleding=kleding
-        )
-    user.save()
+@blueprint.route('/sendquestionair/respondent/mobility/selfcare/usualactivities/pain/anxiety/health', methodes=['POST'])
+def sendquestionair(respondent, mobility, selfcare, usualactivities, pain, anxiety, health):
+    sendanswer = Questionair(respondent=respondent, mobility=mobility, selfCare=selfcare,
+                             usualActivities=usualactivities, painOrDiscomfort=pain, anxietyDepression=anxiety,
+                             todaysHealth=health)
+    sendanswer.save()
     return Response(status=200)
 
 
-@blueprint.route('/admin', methods=['POST'])
-def post_admin():
-    """Manipulate admin data"""
-    geslacht = request.json['geslacht']
-    voornaam = request.json['voornaam']
-    achternaam = request.json['achternaam']
-    username = request.json['username']
-    password = request.json['password']
-    geboortedatum = request.json['geboortedatum']
-    specialisme = request.json['specialisme']
+@blueprint.route('/getquestionair/respondent/datum', methods=['GET'])
+def getquestionair(respondent, datum):
+    getanswer = Questionair.objects(respondent=respondent, datumVanQuestionair=datum)
+    return jsonify(getanswer)
 
-    administrator = Administrator(
-            geslacht=geslacht,
-            geboortedatum=geboortedatum,
-            specialisme=specialisme,
-            username=username,
-            password=password
-        )
-    administrator.naamgegevens = NaamgegevensUser(voornamen=voornaam)
-    administrator.naamgegevens.geslachtsnaam = \
-            GeslachtsnaamUser(achternaam=achternaam)
-    administrator.naamgegevens.contactgegevens = ContactgegevensUser()
-    administrator.naamgegevens.contactgegevens.emailAdressen = \
-            EmailAdressenUser(emailAdres=username)
-    administrator.save()
-    return Response(status=200)
-
-
-@blueprint.route('/sendactiviteiten/username/activiteit/geplandeafstand', methods=['POST'])
-def sendactiviteiten(username, activiteit, geplandeafstand):
-    """Post schedule from user"""
-    sendactiviteit = Schedule(username=username, activiteit=activiteit, geplandeafstand=geplandeafstand)
-    sendactiviteit.save()
-    Response(status=200)
-
-
-@blueprint.route('/getactiviteiten/username/activiteit/datum', methods=['GET'])
-def getactiviteiten(username, activiteit, datum):
-    """Get schedule from user"""
-    schedule = Schedule.objects(username=username, activiteit=activiteit, activiteitDatum=datum)
-    return jsonify(schedule)
 
 
 @blueprint.errorhandler(404)
