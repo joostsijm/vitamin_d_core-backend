@@ -11,6 +11,7 @@ GESLACHTSSOORT = ('UN', 'M', 'F', 'UNK')
 ZORGVERLENERROL = ('RESP', 'REF', 'PRF', 'SPRF', 'CON', 'ATND', 'OTH')
 KLEDINGKEUZE = ('UNDRESSED', 'MINIMAL', 'FULL', 'DIAPER')
 POSITIEKEUZE = ('staande positie', 'liggende positie')
+ACTIVITEITEN = ('rennen', 'lopen', 'fietsen', 'zwemmen')
 
 
 class TelefoonnummersUser(me.EmbeddedDocument):
@@ -102,6 +103,6 @@ class User(me.Document):
 
 class Schedule(me.Document):
     username = me.EmailField()
-    activiteitDatum = me.DateField(default=datetime.date.today)
+    activiteitDatum = me.DateField()
     activiteit = me.StringField(choices=ACTIVITEITEN)  # 'rennen', 'lopen', 'fietsen', 'zwemmen'
     geplandeafstand = me.IntField()
