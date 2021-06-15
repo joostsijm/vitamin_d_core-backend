@@ -6,7 +6,8 @@ from flask import Blueprint, abort, request, jsonify, Response
 
 from vitamin_d_resource_user.models import User, NaamgegevensUser, \
     GeslachtsnaamUser, ContactgegevensUser, EmailAdressenUser, \
-    Administrator, UserData, Lichaamsgewicht, Lichaamslengte
+    Administrator, UserData, Lichaamsgewicht, Lichaamslengte, \
+    Schedule
 
 
 blueprint = Blueprint('application', __name__)
