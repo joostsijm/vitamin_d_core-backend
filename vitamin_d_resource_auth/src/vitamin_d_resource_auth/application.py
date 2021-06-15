@@ -25,15 +25,17 @@ def post_auth():
 def post_login():
     """Post login"""
     username = request.json['username']
-    user = User.objects(User__username=username)
-    if user:
-        password = request.json['password']
-        if user.password == password:
-            session_code = secrets.token_urlsafe()
-            user.session = Session(code=session_code)
-            user.save()
-            return jsonify(session_code)
-    return abort(401)
+    try:
+        user = User.objects.get(username=username)
+    except Exception as error:
+        print(error)
+        return abort(401)
+    password = request.json['password']
+    if user.password == password:
+        session_code = secrets.token_urlsafe()
+        user.session = Session(code=session_code)
+        user.save()
+        return jsonify(session_code)
 
 
 @blueprint.errorhandler(404)
