@@ -7,7 +7,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_mongoengine import MongoEngine
 
-from vitamin_d_resource_user import application
+from vitamin_d_questionair import application
 
 
 # Find .env file
