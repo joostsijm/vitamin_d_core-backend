@@ -2,7 +2,7 @@
 
 import secrets
 
-from flask import Blueprint, abort, request, jsonify
+from flask import Blueprint, abort, request, jsonify, Response
 
 from vitamin_d_resource_auth.models import User, Administrator, Session
 
@@ -25,17 +25,15 @@ def post_auth():
 def post_login():
     """Post login"""
     username = request.json['username']
-    try:
-        user = User.objects.get(username=username)
-    except Exception as error:
-        print(error)
-        return abort(401)
-    password = request.json['password']
-    if user.password == password:
+#    try:
+    user = User.objects(username=username).first()
+#    except Exception as error:
+#        return Response(str(error), status=401)
+    if user.password == request.json['password']:
         session_code = secrets.token_urlsafe()
         user.session = Session(code=session_code)
         user.save()
-        return jsonify(session_code)
+        return jsonify({'session_code': session_code})
 
 
 @blueprint.errorhandler(404)

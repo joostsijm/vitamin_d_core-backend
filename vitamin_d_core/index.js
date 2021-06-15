@@ -86,14 +86,12 @@ app.post('/login', (req, res) => {
         'password': req.body.password,
     }
     
-    // TODO: get correct resource user route
     axios.post('http://resource_auth/login', post_data)
         .then(function (api_res) {
-            console.log(api_res)
-            if (response.status != 200) {
-                res.status(response.status).send(response.body)
+            if (api_res.status != 200) {
+                res.status(api_res.status).send(api_res.body)
             }
-            res.json(api_res)
+            res.json(api_res.data)
         })
         .catch(function (error) {
             res.status(500).send(error.message);
