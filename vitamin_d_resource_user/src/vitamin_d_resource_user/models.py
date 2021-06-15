@@ -98,15 +98,10 @@ class User(me.Document):
     userdata = me.EmbeddedDocumentField(UserData)
     username = me.EmailField(unique=True)
     password = me.StringField()
-#
-#
-# class Questionair(me.Document):
-#     questionair_id = me.ReferenceField(User)
-#     question = me.StringField()
-#     answer = me.StringField()
-#
-#
-# class Schedule(me.Document):
-#     schedule_id = me.ReferenceField(User)
-#     beschrijving = me.StringField()
-#     datum = me.DateTimeField()
+
+
+class Schedule(me.Document):
+    username = me.EmailField()
+    activiteitDatum = me.DateField(default=datetime.date.today)
+    activiteit = me.StringField(choices=ACTIVITEITEN)  # 'rennen', 'lopen', 'fietsen', 'zwemmen'
+    geplandeafstand = me.IntField()
