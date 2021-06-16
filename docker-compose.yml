@@ -43,6 +43,16 @@ services:
     restart: on-failure
     build: ./vitamin_d_resource_activity
 
+  resource_questionnaire:
+    environment:
+      - FLASK_ENV
+      - FLASK_SECRET_KEY
+      - MONGO_DB
+      - MONGO_HOST
+    restart: on-failure
+    build: ./vitamin_d_resource_questionnaire
+    stop_signal: SIGINT
+
   mongo:
     image: mongo
     command: --quiet --logpath /dev/null
