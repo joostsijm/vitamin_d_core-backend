@@ -14,6 +14,10 @@ POSITIEKEUZE = ('staande positie', 'liggende positie')
 ACTIVITEITEN = ('rennen', 'lopen', 'fietsen', 'zwemmen')
 
 
+class Session(me.EmbeddedDocument):
+    code = me.StringField()
+
+
 class TelefoonnummersUser(me.EmbeddedDocument):
     telefoonnummer = me.IntField()
     toelichting = me.StringField()
@@ -68,6 +72,7 @@ class Administrator(me.Document):
     specialisme = me.StringField()
     zorgverlenerRol = me.StringField(choices=ZORGVERLENERROL)   #'RESP', 'REF', 'PRF', 'SPRF', 'CON', 'ATND', 'OTH'
     naamgegevens = me.EmbeddedDocumentField(NaamgegevensUser)
+    session = me.EmbeddedDocumentField(Session)
     username = me.EmailField()
     password = me.StringField()
 
@@ -97,6 +102,7 @@ class User(me.Document):
     geslacht = me.StringField(choices=GESLACHTSSOORT)   #'UN', 'M', 'F', 'UNK'
     naamgegevens = me.EmbeddedDocumentField(NaamgegevensUser)
     userdata = me.EmbeddedDocumentField(UserData)
+    session = me.EmbeddedDocumentField(Session)
     username = me.EmailField(unique=True)
     password = me.StringField()
 

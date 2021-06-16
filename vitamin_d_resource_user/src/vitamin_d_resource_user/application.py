@@ -12,12 +12,12 @@ from vitamin_d_resource_user.models import User, NaamgegevensUser, \
 
 blueprint = Blueprint('application', __name__)
 
-@blueprint.route('/user/username', methods=['GET'])
+@blueprint.route('/user/<username>', methods=['GET'])
 def get(username):
     """Get user"""
-    user = User.objects(User__username=username)
+    user = User.objects(username=username).first()
     if not user:
-        user = Administrator.objects(User__username=username)
+        user = Administrator.objects(username=username).first()
     return jsonify(user)
 
 

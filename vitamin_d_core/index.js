@@ -30,16 +30,20 @@ app.get('/user', (req, res) => {
         .then(function (auth_res) {
             axios.get('http://resource_user/user/' + auth_res.data.username)
                 .then(function (api_res) {
+                    console.log(api_res)
                     res.json({
-                        'firstname': api_res.data.firstname,
-                        'lastname': api_res.data.lastname,
                         'username': api_res.data.username,
-                        'password': api_res.data.password,
-                        'birthdate': api_res.data.birthdate,
-                        'gender': api_res.data.gender,
-                        'lenght': api_res.data.lenght,
-                        'weight': api_res.data.weight,
-                        'dressed': api_res.data.dressed,
+                        'firstname': api_res.data.naamgegevens.voornaam,
+                        'lastname': api_res.data.naamgegevens.geslachtsnaam.achternaam,
+                        // 'password': api_res.data.password,
+                        'birthdate': api_res.data.geboortedatum['$date'],
+                        'gender': api_res.data.geslacht,
+                        'lenght': api_res.data.userdata.lichaamslengte.lengteWaarde,
+                        'position': api_res.data.userdata.lichaamslengte.positie,
+                        'lenghtdatetime': api_res.data.userdata.lichaamslengte.lengteDatum,
+                        'weight': api_res.data.userdata.lichaamsgewicht.gewichtWaarde,
+                        'dressed': api_res.data.userdata.lichaamsgewicht.kleding,
+                        'weightdatetime': api_res.data.userdata.lichaamsgewicht.gewichtDatum,
                     })
                 })
                 .catch(function (error) {
