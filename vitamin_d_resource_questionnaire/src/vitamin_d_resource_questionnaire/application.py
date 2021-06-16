@@ -1,6 +1,6 @@
 """Application blueprint"""
 
-from datetime import date
+from datetime import datetime
 
 from flask import Blueprint, abort, jsonify, Response, request
 
@@ -22,21 +22,21 @@ def post_answer():
             anxietyDepression=ANXIETYDEPRESSION[
                     request.json['anxietydepression']
                 ],
-            todaysHealth=request.json['todayhealth'],
-            date=date.today()
+            todaysHealth=request.json['todayshealth'],
+            date=datetime.now()
         )
     questionnaire.save()
     return Response(status=200)
 
 
-@blueprint.route('/questionnairs/<username>', methods=['GET'])
+@blueprint.route('/questionnaires/<username>', methods=['GET'])
 def get_questionnairs(username):
     """Get questionaires based on username"""
-    questionnaires = Questionnaire.objects(username=username).find()
+    questionnaires = Questionnaire.objects(username=username)
     questionnaires_list = []
     for questionnaire in questionnaires:
         questionnaires_list.append({
-                'date': questionnaire.date,
+                'date': datetime.timestamp(questionnaire.date) * 1000,
                 'mobility': MOBILITY.index(questionnaire.mobility),
                 'selfCare': SELFCARE.index(questionnaire.selfCare),
                 'usualActivities': USUALACTIVITIES.index(

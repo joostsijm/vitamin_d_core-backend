@@ -31,7 +31,7 @@ ANXIETYDEPRESSION = (
 
 class Questionnaire(me.Document):
     username = me.EmailField()
-    date = me.DateField()
+    date = me.DateTimeField()
     mobility = me.StringField(choices=MOBILITY)
     selfCare = me.StringField(choices=SELFCARE)
     usualActivities = me.StringField(choices=USUALACTIVITIES)

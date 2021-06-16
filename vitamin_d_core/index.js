@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
     res.render('index')
 });
 
-app.get('/user', (req, res) => {
+app.get('/user/', (req, res) => {
     // get user data
     session_code = req.cookies.session_code
     axios.post('http://resource_auth/auth', {'session_code': session_code})
@@ -38,10 +38,10 @@ app.get('/user', (req, res) => {
                         'gender': api_res.data.geslacht,
                         'lenght': api_res.data.userdata.lichaamslengte.lengteWaarde,
                         'position': api_res.data.userdata.lichaamslengte.positie,
-                        'lenghtdatetime': api_res.data.userdata.lichaamslengte.lengteDatum,
+                        'lenghtdatetime': api_res.data.userdata.lichaamslengte.lengteDatum['$date'],
                         'weight': api_res.data.userdata.lichaamsgewicht.gewichtWaarde,
                         'dressed': api_res.data.userdata.lichaamsgewicht.kleding,
-                        'weightdatetime': api_res.data.userdata.lichaamsgewicht.gewichtDatum,
+                        'weightdatetime': api_res.data.userdata.lichaamsgewicht.gewichtDatum['$date'],
                     })
                 })
                 .catch(function (error) {
@@ -53,7 +53,7 @@ app.get('/user', (req, res) => {
         });
 });
 
-app.post('/user', (req, res, next) => {
+app.post('/user/', (req, res, next) => {
     // Register new user
     post_data = {
         'geslacht': req.body.gender,
@@ -82,7 +82,7 @@ app.post('/user', (req, res, next) => {
 
 });
 
-app.post('/login', (req, res) => {
+app.post('/login/', (req, res) => {
     // login user
     post_data = {
         'username': req.body.username,
@@ -132,7 +132,7 @@ app.get('/activity/', (req, res) => {
         });
 });
 
-app.get('/activity/history', (req, res) => {
+app.get('/activity/history/', (req, res) => {
     // get activity data
     axios.get('http://resource_activity/history')
         .then(function (activity) {
@@ -147,13 +147,20 @@ app.get('/activity/history', (req, res) => {
         });
 });
 
-app.post('questionnaire', (req, res) => {
+app.post('/questionnaire/', (req, res) => {
     session_code = req.cookies.session_code
     axios.post('http://resource_auth/auth', {'session_code': session_code})
         .then(auth_res => {
-            post_data = req.body
-            post_data['username'] = auth_res.data.username
-            axios.post('http://resource_questionnaire/anwser', post_data)
+            post_data = {
+                'username': auth_res.data.username,
+                'mobility': Number(req.body.mobility),
+                'selfcare': Number(req.body.selfcare),
+                'usualactivities': Number(req.body.usualactivities),
+                'paindiscomfort': Number(req.body.usualactivities),
+                'anxietydepression': Number(req.body.anxietydepression),
+                'todayshealth': Number(req.body.todayshealth),
+            }
+            axios.post('http://resource_questionnaire/answer', post_data)
                 .then(api_res => {
                     res.status(200).end()
                 })
@@ -166,7 +173,7 @@ app.post('questionnaire', (req, res) => {
         });
 })
 
-app.get('quetionnaire', (req, res) => {
+app.get('/questionnaire/', (req, res) => {
     session_code = req.cookies.session_code
     axios.post('http://resource_auth/auth', {'session_code': session_code})
         .then(auth_res => {
@@ -175,13 +182,13 @@ app.get('quetionnaire', (req, res) => {
                     questionnaires = []
                     api_res.data.forEach(questionnaire => {
                         questionnaires.push({
-                            'mobility': api_res.data.mobility,
-                            'selfcare': api_res.data.selfCare,
-                            'usualactivities': api_res.data.usualActivities,
-                            'paindiscomfort': api_res.data.painOrDiscomfort,
-                            'anxietydepression': api_res.data.anxietyDepression,
-                            'todaysHealth': api_res.data.todaysHealth,
-                            'datetime': api_res.data.date
+                            'mobility': questionnaire.mobility,
+                            'selfcare': questionnaire.selfCare,
+                            'usualactivities': questionnaire.usualActivities,
+                            'paindiscomfort': questionnaire.painOrDiscomfort,
+                            'anxietydepression': questionnaire.anxietyDepression,
+                            'todayshealth': questionnaire.todaysHealth,
+                            'datetime': questionnaire.date
                         })
                     })
                     res.json(questionnaires)
@@ -194,7 +201,6 @@ app.get('quetionnaire', (req, res) => {
             res.status(error.response.status).send(error.response.data)
         });
 })
-
 
 const port = 80;
 app.listen(port, () => console.log('Server running...'));
