@@ -9,21 +9,25 @@ from vitamin_d_questionair.models import Questionair
 
 blueprint = Blueprint('application', __name__)
 
-
-@blueprint.route('/sendquestionair/respondent/mobility/selfcare/usualactivities/pain/anxiety/health', methodes=['POST'])
-def sendquestionair(respondent, mobility, selfcare, usualactivities, pain, anxiety, health):
-    sendanswer = Questionair(respondent=respondent, mobility=mobility, selfCare=selfcare,
-                             usualActivities=usualactivities, painOrDiscomfort=pain, anxietyDepression=anxiety,
-                             todaysHealth=health)
-    sendanswer.save()
+@blueprint.route('/answer', methodes=['POST'])
+def post_answer():
+    questionnaire = Questionair(
+            username=request.json['username'],
+            mobility=request.json['mobility'],
+            selfCare=request.json['selfcare'],
+            usualActivities=request.json['usualactivities'],
+            painOrDiscomfort=request.json['paindiscomfort'],
+            anxietyDepression=request.json['anxietydepression'],
+            todaysHealth=request.json['todayhealth']
+        )
+    questionnaire.save()
     return Response(status=200)
 
 
-@blueprint.route('/getquestionair/respondent/datum', methods=['GET'])
-def getquestionair(respondent, datum):
-    getanswer = Questionair.objects(respondent=respondent, datumVanQuestionair=datum)
-    return jsonify(getanswer)
-
+@blueprint.route('/questionnairs/<username>', methods=['GET'])
+def get_questionnairs(username):
+    questionnaire = Questionnaire.objects(username=username).first()
+    return jsonify(questionnaire)
 
 
 @blueprint.errorhandler(404)

@@ -16,12 +16,12 @@ PAINDISCOMFORT = ('I have no pain or discomfort',
                   'I have extreme pain or discomfort')
 ANXIETYDEPRESSION= ('I am not anxious or depressed',
                     'I am moderately anxious or depressed',
-                    'I am extremely anxious or depressed ')
+                    'I am extremely anxious or depressed')
 
 
-class Questionair(me.Document):
-    respondent = me.EmailField()
-    datumVanQuestionair = me.DateField()
+class Questionnaire(me.Document):
+    username = me.EmailField()
+    date = me.DateField()
     mobility = me.StringField(choices=MOBILITY)
     selfCare = me.StringField(choices=SELFCARE)
     usualActivities = me.StringField(choices=USUALACTIVITIES)
