@@ -14,6 +14,17 @@ services:
       - MONGO_HOST
     restart: on-failure
     build: ./vitamin_d_scheduler
+    stop_signal: SIGINT
+
+  resource_auth:
+    environment:
+      - FLASK_ENV
+      - FLASK_SECRET_KEY
+      - MONGO_DB
+      - MONGO_HOST
+    restart: on-failure
+    build: ./vitamin_d_resource_auth
+    stop_signal: SIGINT
 
   resource_user:
     environment:
@@ -23,6 +34,7 @@ services:
       - MONGO_HOST
     restart: on-failure
     build: ./vitamin_d_resource_user
+    stop_signal: SIGINT
 
   resource_activity:
     environment:
@@ -30,6 +42,7 @@ services:
       - MONGO_HOST
     restart: on-failure
     build: ./vitamin_d_resource_activity
+
   mongo:
     image: mongo
     command: --quiet --logpath /dev/null

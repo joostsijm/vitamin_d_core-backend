@@ -3,6 +3,9 @@ const axios = require('axios');
 
 const app = express();
 
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
@@ -22,67 +25,76 @@ app.get('/', (req, res) => {
 
 app.get('/user', (req, res) => {
     // get user data
-    axios.get('http://resource_user/user')
-        .then(function (api_res) {
-            // TODO: parse data correctly
-            res.json({
-                'email': api_res.body.email,
-                'firstname': api_res.body.firstname,
-                'lastname': api_res.body.lastname,
-                'password': api_res.body.password,
-                'birthdate': api_res.body.birthdate,
-                'gender': api_res.body.gender,
-                'lenght': api_res.body.lenght,
-                'weight': api_res.body.weight,
-                'dressed': api_res.body.dressed,
-            })
+    session_code = req.cookies.session_code
+    axios.post('http://resource_auth/auth', {'session_code': session_cookie})
+        .then(function (auth_res) {
+            axios.get('http://resource_user/user/' + auth_res.body.username)
+                .then(function (api_res) {
+                    res.json({
+                        'firstname': api_res.body.firstname,
+                        'lastname': api_res.body.lastname,
+                        'username': api_res.body.username,
+                        'password': api_res.body.password,
+                        'birthdate': api_res.body.birthdate,
+                        'gender': api_res.body.gender,
+                        'lenght': api_res.body.lenght,
+                        'weight': api_res.body.weight,
+                        'dressed': api_res.body.dressed,
+                    })
+                })
+                .catch(function (error) {
+                    res.status(500).send(error.message);
+                });
         })
         .catch(function (error) {
-            console.log(error);
+            res.status(500).send(error.message);
         });
 });
 
-app.post('/user', (req, res) => {
+app.post('/user', (req, res, next) => {
     // Register new user
     post_data = {
-        // TODO: format data correctly
         'geslacht': req.body.gender,
         'voornaam': req.body.firstname,
         'achternaam': req.body.lastname,
-        'username': req.body.email,
+        'username': req.body.username,
         'password': req.body.password,
         'geboortedatum': req.body.birthdate,
         'lengte': req.body.lenght,
+        'lengtepositie': req.body.lenghtposition,
         'gewicht': req.body.weight,
         'gewichtpositie': req.body.dressed,
     }
     
     axios.post('http://resource_user/user', post_data)
-        .then(res.sendStatus(200))
-        .catch(function (error) {
-            console.log(error);
-            res.sendStatus(400);
+        .then(response => {
+            if (response.status != 200) {
+                res.status(response.status).send(response.body)
+            }
+            res.status(200).end()
+        })
+        .catch(error => {
+            res.status(error.response.status).send(error.response.body)
         });
+
 });
 
 app.post('/login', (req, res) => {
     // login user
     post_data = {
-        'email': req.body.email,
-        'password': password,
+        'username': req.body.username,
+        'password': req.body.password,
     }
     
-    // TODO: get correct resource user route
-    axios.post('http://resource_user/login', post_data)
+    axios.post('http://resource_auth/login', post_data)
         .then(function (api_res) {
-            // TODO: return correct session
-            res.json({
-                'session': 'zero',
-            })
+            if (api_res.status != 200) {
+                res.status(api_res.status).send(api_res.body)
+            }
+            res.json(api_res.data)
         })
         .catch(function (error) {
-            console.log(error);
-            res.sendStatus(400);
+            res.status(500).send(error.message);
         });
 });
 
@@ -98,8 +110,7 @@ app.post('/activity/', (req, res) => {
             res.sendStatus(200);
         })
         .catch(function (error) {
-            console.log(error);
-            res.sendStatus(400);
+            res.status(500).send(error.message);
         });
 });
 
@@ -114,7 +125,7 @@ app.get('/activity/', (req, res) => {
             })
         })
         .catch(function (error) {
-            console.log(error);
+            res.status(500).send(error.message);
         });
 });
 
@@ -129,7 +140,7 @@ app.get('/activity/history', (req, res) => {
             })
         })
         .catch(function (error) {
-            console.log(error);
+            res.status(500).send(error.message);
         });
 });
 

@@ -11,7 +11,10 @@ GESLACHTSSOORT = ('UN', 'M', 'F', 'UNK')
 ZORGVERLENERROL = ('RESP', 'REF', 'PRF', 'SPRF', 'CON', 'ATND', 'OTH')
 KLEDINGKEUZE = ('UNDRESSED', 'MINIMAL', 'FULL', 'DIAPER')
 POSITIEKEUZE = ('staande positie', 'liggende positie')
-ACTIVITEITEN = ('rennen', 'lopen', 'fietsen', 'zwemmen')
+
+
+class Session(me.EmbeddedDocument):
+    code = me.StringField()
 
 
 class TelefoonnummersUser(me.EmbeddedDocument):
@@ -68,6 +71,7 @@ class Administrator(me.Document):
     specialisme = me.StringField()
     zorgverlenerRol = me.StringField(choices=ZORGVERLENERROL)   #'RESP', 'REF', 'PRF', 'SPRF', 'CON', 'ATND', 'OTH'
     naamgegevens = me.EmbeddedDocumentField(NaamgegevensUser)
+    session = me.EmbeddedDocumentField(Session)
     username = me.EmailField()
     password = me.StringField()
 
@@ -99,10 +103,16 @@ class User(me.Document):
     userdata = me.EmbeddedDocumentField(UserData)
     username = me.EmailField(unique=True)
     password = me.StringField()
-
-
-class Schedule(me.Document):
-    username = me.EmailField()
-    activiteitDatum = me.DateField()
-    activiteit = me.StringField(choices=ACTIVITEITEN)  # 'rennen', 'lopen', 'fietsen', 'zwemmen'
-    geplandeafstand = me.IntField()
+    session = me.EmbeddedDocumentField(Session)
+#
+#
+# class Questionair(me.Document):
+#     questionair_id = me.ReferenceField(User)
+#     question = me.StringField()
+#     answer = me.StringField()
+#
+#
+# class Schedule(me.Document):
+#     schedule_id = me.ReferenceField(User)
+#     beschrijving = me.StringField()
+#     datum = me.DateTimeField()

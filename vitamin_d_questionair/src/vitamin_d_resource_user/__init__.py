@@ -7,7 +7,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_mongoengine import MongoEngine
 
-from vitamin_d_fitbit import application
+from vitamin_d_questionair import application
 
 
 # Find .env file
@@ -23,8 +23,8 @@ def create_app(test_config=None):
         FLASK_ENV=environ.get('FLASK_ENV'),
         SECRET_KEY=environ.get('FLASK_SECRET_KEY'),
         MONGODB_SETTINGS={
-                'db': environ.get('MONOG_DB'),
-                'host': environ.get('MONOG_HOST'),
+                'db': environ.get('MONGO_DB'),
+                'host': environ.get('MONGO_HOST'),
             },
     )
 
