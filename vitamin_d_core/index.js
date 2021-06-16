@@ -45,11 +45,11 @@ app.get('/user', (req, res) => {
                     })
                 })
                 .catch(function (error) {
-                    res.status(500).send(error.message);
+                    res.status(error.response.status).send(error.response.data)
                 });
         })
         .catch(function (error) {
-            res.status(500).send(error.message);
+            res.status(error.response.status).send(error.response.data)
         });
 });
 
@@ -71,12 +71,13 @@ app.post('/user', (req, res, next) => {
     axios.post('http://resource_user/user', post_data)
         .then(response => {
             if (response.status != 200) {
-                res.status(response.status).send(response.body)
+                console.log(response)
+                res.status(response.status).send(response)
             }
             res.status(200).end()
         })
         .catch(error => {
-            res.status(error.response.status).send(error.response.body)
+            res.status(error.response.status).send(error.response.data)
         });
 
 });
@@ -96,7 +97,7 @@ app.post('/login', (req, res) => {
             res.json(api_res.data)
         })
         .catch(function (error) {
-            res.status(500).send(error.message);
+            res.status(error.response.status).send(error.response.data)
         });
 });
 
@@ -112,7 +113,7 @@ app.post('/activity/', (req, res) => {
             res.sendStatus(200);
         })
         .catch(function (error) {
-            res.status(500).send(error.message);
+            res.status(error.response.status).send(error.response.data)
         });
 });
 
@@ -127,7 +128,7 @@ app.get('/activity/', (req, res) => {
             })
         })
         .catch(function (error) {
-            res.status(500).send(error.message);
+            res.status(error.response.status).send(error.response.data)
         });
 });
 
@@ -142,7 +143,7 @@ app.get('/activity/history', (req, res) => {
             })
         })
         .catch(function (error) {
-            res.status(500).send(error.message);
+            res.status(error.response.status).send(error.response.data)
         });
 });
 
