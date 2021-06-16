@@ -4,14 +4,14 @@ from datetime import datetime
 
 from flask import Blueprint, abort, jsonify, Response
 
-from vitamin_d_questionair.models import Questionair
+from vitamin_d_resource_questionnaire.models import Questionnaire
 
 
 blueprint = Blueprint('application', __name__)
 
-@blueprint.route('/answer', methodes=['POST'])
+@blueprint.route('/answer', methods=['POST'])
 def post_answer():
-    questionnaire = Questionair(
+    questionnaire = Questionnaire(
             username=request.json['username'],
             mobility=request.json['mobility'],
             selfCare=request.json['selfcare'],
