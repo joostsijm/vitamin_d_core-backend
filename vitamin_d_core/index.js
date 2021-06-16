@@ -30,12 +30,10 @@ app.get('/user', (req, res) => {
         .then(function (auth_res) {
             axios.get('http://resource_user/user/' + auth_res.data.username)
                 .then(function (api_res) {
-                    console.log(api_res)
                     res.json({
                         'username': api_res.data.username,
                         'firstname': api_res.data.naamgegevens.voornaam,
                         'lastname': api_res.data.naamgegevens.geslachtsnaam.achternaam,
-                        // 'password': api_res.data.password,
                         'birthdate': api_res.data.geboortedatum['$date'],
                         'gender': api_res.data.geslacht,
                         'lenght': api_res.data.userdata.lichaamslengte.lengteWaarde,
