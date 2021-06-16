@@ -63,7 +63,7 @@ app.post('/user', (req, res, next) => {
         'password': req.body.password,
         'geboortedatum': req.body.birthdate,
         'lengte': req.body.lenght,
-        'lengtepositie': req.body.lenghtposition,
+        'lengtepositie': req.body.position,
         'gewicht': req.body.weight,
         'gewichtpositie': req.body.dressed,
     }
