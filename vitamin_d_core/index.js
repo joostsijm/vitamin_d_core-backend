@@ -147,5 +147,54 @@ app.get('/activity/history', (req, res) => {
         });
 });
 
+app.post('questionnaire', (req, res) => {
+    session_code = req.cookies.session_code
+    axios.post('http://resource_auth/auth', {'session_code': session_code})
+        .then(auth_res => {
+            post_data = req.body
+            post_data['username'] = auth_res.data.username
+            axios.post('http://resource_questionnaire/anwser', post_data)
+                .then(api_res => {
+                    res.status(200).end()
+                })
+                .catch(function (error) {
+                    res.status(error.response.status).send(error.response.data)
+                });
+        })
+        .catch(function (error) {
+            res.status(error.response.status).send(error.response.data)
+        });
+})
+
+app.get('quetionnaire', (req, res) => {
+    session_code = req.cookies.session_code
+    axios.post('http://resource_auth/auth', {'session_code': session_code})
+        .then(auth_res => {
+            axios.get('http://resource_questionnaire/questionnaires/' + auth_res.data.username)
+                .then(api_res => {
+                    questionnaires = []
+                    api_res.data.forEach(questionnaire => {
+                        questionnaires.push({
+                            'mobility': api_res.data.mobility,
+                            'selfcare': api_res.data.selfCare,
+                            'usualactivities': api_res.data.usualActivities,
+                            'paindiscomfort': api_res.data.painOrDiscomfort,
+                            'anxietydepression': api_res.data.anxietyDepression,
+                            'todaysHealth': api_res.data.todaysHealth,
+                            'datetime': api_res.data.date
+                        })
+                    })
+                    res.json(questionnaires)
+                })
+                .catch(function (error) {
+                    res.status(error.response.status).send(error.response.data)
+                });
+        })
+        .catch(function (error) {
+            res.status(error.response.status).send(error.response.data)
+        });
+})
+
+
 const port = 80;
 app.listen(port, () => console.log('Server running...'));
