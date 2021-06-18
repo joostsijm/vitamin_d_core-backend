@@ -1,7 +1,4 @@
-.PHONY: FORCE build start stop rm logs
-
--include .env
-export
+.PHONY: FORCE build start stop rm logs restart
 
 name = $(notdir $(CURDIR))
 
@@ -11,7 +8,7 @@ build:
 	docker build -t $(name) .
 
 start:
-	docker run --name $(name) -dp 3001:3000 $(name)
+	docker run --name $(name) -dp 5000:5000 $(name)
 
 stop:
 	docker stop $(name)

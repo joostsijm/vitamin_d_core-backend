@@ -1,21 +1,14 @@
 # syntax=docker/dockerfile:1
 
-# Set base image
-FROM node:16-slim
+FROM python:3.9-slim
 
-# Create app directory
 WORKDIR /usr/src/app
 
-# Copy dependencies
-COPY package*.json ./
+COPY src/vitamin_d_resource_activity/__main__.py src/vitamin_d_resource_activity/__main__.py
+COPY README.md README.md
+COPY setup.py setup.py
+RUN pip3 install -e .
 
-# Install dependencies
-RUN npm install
-# For production
-# RUN npm ci --only=production
-
-# Bundle app
 COPY . .
 
-# Start app
-CMD ["npm", "start"]
+CMD "vitamin_d_resource_activity"

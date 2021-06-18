@@ -38,10 +38,13 @@ services:
 
   resource_activity:
     environment:
+      - FLASK_ENV
+      - FLASK_SECRET_KEY
       - MONGO_DB
       - MONGO_HOST
     restart: on-failure
     build: ./vitamin_d_resource_activity
+    stop_signal: SIGINT
 
   resource_questionnaire:
     environment:

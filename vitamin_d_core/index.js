@@ -101,16 +101,50 @@ app.post('/login/', (req, res) => {
         });
 });
 
-app.post('/activity/', (req, res) => {
-    // login user
-    post_data = {
-        'datetime': req.body.datetime,
-        'distance': req.body.distance,
-    }
-    
-    axios.post('http://resource_activity/', post_data)
-        .then(function (api_res) {
-            res.sendStatus(200);
+app.post('/schedule/', (req, res) => {
+    // create schedule
+    session_code = req.cookies.session_code
+    axios.post('http://resource_auth/auth', {'session_code': session_code})
+        .then(auth_res => {
+            post_data = {
+                'username': auth_res.data.username,
+                'datetime': req.body.datetime,
+                'distance': Number(req.body.distance),
+                'type': req.body.type,
+            }
+            axios.post('http://resource_schedule/schedule', post_data)
+                .then(api_res => {
+                    res.status(200).end()
+                })
+                .catch(function (error) {
+                    res.status(error.response.status).send(error.response.data)
+                });
+        })
+        .catch(function (error) {
+            res.status(error.response.status).send(error.response.data)
+        });
+});
+
+app.get('/schedule/', (req, res) => {
+    // get schedule data
+    session_code = req.cookies.session_code
+    axios.post('http://resource_auth/auth', {'session_code': session_code})
+        .then(auth_res => {
+            axios.get('http://resource_schedule/schedule/' + auth_res.data.username)
+                .then(api_res => {
+                    schedules = []
+                    api_res.data.forEach(schedule => {
+                        schedules.push({
+                            'date': schedule.date,
+                            'distance': schedule.distance,
+                            'type': schedule.activity_type,
+                        })
+                    })
+                    res.json(schedules)
+                })
+                .catch(function (error) {
+                    res.status(error.response.status).send(error.response.data)
+                });
         })
         .catch(function (error) {
             res.status(error.response.status).send(error.response.data)
@@ -119,28 +153,24 @@ app.post('/activity/', (req, res) => {
 
 app.get('/activity/', (req, res) => {
     // get activity data
-    axios.get('http://resource_activity/')
-        .then(function (activity) {
-            res.json({
-                'id': activity.body.id,
-                'datetime': activity.body.datetime,
-                'distance': activity.body.distance,
-            })
-        })
-        .catch(function (error) {
-            res.status(error.response.status).send(error.response.data)
-        });
-});
-
-app.get('/activity/history/', (req, res) => {
-    // get activity data
-    axios.get('http://resource_activity/history')
-        .then(function (activity) {
-            res.json({
-                'id': activity.body.id,
-                'datetime': activity.body.datetime,
-                'distance': activity.body.distance,
-            })
+    session_code = req.cookies.session_code
+    axios.post('http://resource_auth/auth', {'session_code': session_code})
+        .then(auth_res => {
+            axios.get('http://resource_activity/activity/' + auth_res.data.username)
+                .then(api_res => {
+                    activities = []
+                    api_res.data.forEach(activity=> {
+                        activities.push({
+                            'date': activity.date,
+                            'distance': activity.distance,
+                            'type': activity.activity_type,
+                        })
+                    })
+                    res.json(activity)
+                })
+                .catch(function (error) {
+                    res.status(error.response.status).send(error.response.data)
+                });
         })
         .catch(function (error) {
             res.status(error.response.status).send(error.response.data)
