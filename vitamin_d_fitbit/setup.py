@@ -21,7 +21,7 @@ setuptools.setup(
         "flask",
         "python-dotenv",
         "flask-cors",
-        "pendulum",
+        "requests",
     ],
     entry_points = {
         'console_scripts': ['vitamin_d_fitbit=vitamin_d_fitbit.__main__:main'],

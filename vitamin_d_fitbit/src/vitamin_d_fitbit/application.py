@@ -1,38 +1,55 @@
 """Application blueprint"""
 
-from flask import Blueprint, abort
+from datetime import date
 
-from vitamin_d_fitbit.fitapi import fitapi
+from flask import Blueprint, abort, Response
+import requests
 
-from vitamin_d_resource_user/vitamin_d_resource_user.models import Schedule
+from vitamin_d_fitbit import fitbitapi
 
 
 blueprint = Blueprint('application', __name__)
 
-@blueprint.route('/', methods=(['GET']))
-def index():
-    """Get data from fitbit"""
-    return 'send'
-
-
-@blueprint.route('/afstand/username/activiteit/datum', methods=['POST'])
-def afstand(username, activiteit, datum):
-    """Post of de activiteit is behaald"""
-    if activiteit == lopen:
-        afstandactiviteit = distancewalked()
-    elif activiteit == rennen:
-        afstandactiviteit = distanceran()
-    elif activiteit == fietsen:
-        afstandactiviteit = distancebiked()
-    else: 
-        afstandactiviteit = distanceswam()
-
-    qset = Schedule.objects(username=username, activiteit=activiteit, activiteitDatum=datum)
-    doc = qset.first()
-    if int(doc.geplandeafstand) <= afstandactiviteit:
-        return True
-    else:
-        return False
+@blueprint.route('/sync/<username>', methods=(['GET']))
+def index(username):
+    """Sync data from fitbit"""
+    walked_distance = fitbitapi.distancewalked()
+    if walked_distance:
+        json = {
+                'username': username,
+                'date': date.today(),
+                'distance': walked_distance,
+                'type': 'lopen',
+            }
+        requests.post('http://resource_activity/', json=json)
+    ran_distance = fitbitapi.distanceran()
+    if ran_distance:
+        json = {
+                'username': username,
+                'date': date.today(),
+                'distance': ran_distance,
+                'type': 'rennen',
+            }
+        requests.post('http://resource_activity/', json=json)
+    biked_distance = fitbitapi.distancebiked()
+    if biked_distance:
+        json = {
+                'username': username,
+                'date': date.today(),
+                'distance': biked_distance,
+                'type': 'fietsen',
+            }
+        requests.post('http://resource_activity/', json=json)
+    swam_distance = fitbitapi.distanceswam()
+    if swam_distance:
+        json = {
+                'username': username,
+                'date': date.today(),
+                'distance': swam_distance,
+                'type': 'zwemmen',
+            }
+        requests.post('http://resource_activity/', json=json)
+    return Response(status=200)
 
 
 @blueprint.errorhandler(404)

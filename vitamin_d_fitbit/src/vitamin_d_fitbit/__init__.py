@@ -2,17 +2,12 @@
 
 from os import environ, path, makedirs
 
-from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
 from flask_mongoengine import MongoEngine
 
 from vitamin_d_fitbit import application
 
-
-# Find .env file
-basedir = path.abspath(path.dirname(__file__))
-load_dotenv(path.join(basedir, '.env'))
 
 def create_app(test_config=None):
     """Create and configure the app"""

@@ -1,85 +1,117 @@
-# Author Lars Korpel
-import requests, json
+"""
+Fitbit API
+
+Author: Lars Korpel
+"""
+
 import datetime
+import json
+
+import requests
+
 
 # Api urls
-authorize_url = "https://www.fitbit.com/oauth2/authorize"
-token_url = "https://api.fitbit.com/oauth2/token"
-callback_uri = "http://127.0.0.1:8080/"
-api_url = "https://api.fitbit.com/1/user/-/activities/date/" + str(datetime.date.today()) + ".json"
+AUTHORIZE_URL = "https://www.fitbit.com/oauth2/authorize"
+TOKEN_URL = "https://api.fitbit.com/oauth2/token"
+CALLBACK_URI = "http://127.0.0.1:8080/"
+API_URL = "https://api.fitbit.com/1/user/-/activities/date/{}.json".format(datetime.date.today())
 
 # Test user account credentials for testing purposes
-client_id = '23B84K'
-client_secret = '2e1e5fb79a84c1e09efab6f80aa908d8'
+CLIENT_ID = '23B84K'
+CLIENT_SECRET = '2e1e5fb79a84c1e09efab6f80aa908d8'
 
-authorization_redirect_url = authorize_url + '?response_type=code&client_id=' + client_id + '&redirect_uri=' \
-                             + callback_uri + '&scope=activity'
-auth_code_response = requests.get(authorization_redirect_url)
+AUTHORIZATION_REDIRECT_URL = \
+    '{}?response_type=code&client_id={}&redirect_uri={}&scope=activity'.format(
+        AUTHORIZE_URL,
+        CLIENT_ID,
+        CALLBACK_URI,
+    )
+AUTH_CODE_RESPONSE = requests.get(AUTHORIZATION_REDIRECT_URL)
 
 # Request permission
 print("go to the following url on the browser and enter the code from the returned url: ")
-print("---  " + authorization_redirect_url + "  ---")
-authorization_code = input('code: ')
+print("---  {}  ---".format(AUTHORIZATION_REDIRECT_URL ))
+AUTHORIZATION_CODE = input('code: ')
 
 # Turn the authorization code into a access token
-data = {'grant_type': 'authorization_code', 'code': authorization_code, 'redirect_uri': callback_uri}
+DATA = {
+        'grant_type': 'authorization_code',
+        'code': AUTHORIZATION_CODE,
+        'redirect_uri': CALLBACK_URI
+    }
+
 print("requesting access token")
-access_token_response = requests.post(token_url, data=data, verify=False, allow_redirects=False, auth=(client_id,
-                                                                                                       client_secret))
+ACCESS_TOKEN_RESPONSE = requests.post(
+        TOKEN_URL,
+        data=DATA,
+        verify=False,
+        allow_redirects=False,
+        auth=(CLIENT_ID, CLIENT_SECRET)
+    )
 
 # Get access token
-tokens = json.loads(access_token_response.text)
-access_token = tokens['access_token']
-print(access_token)
+TOKENS = json.loads(ACCESS_TOKEN_RESPONSE.text)
+ACCESS_TOKEN = TOKENS['access_token']
+print(ACCESS_TOKEN)
 
 # Api call
-api_call_headers = {'Authorization': 'Bearer ' + access_token}
-api_call_response = requests.get(api_url, headers=api_call_headers, verify=False)
+API_CALL_HEADERS = {'Authorization': 'Bearer {}'.format(ACCESS_TOKEN)}
+API_CALL_RESPONSE = requests.get(API_URL, headers=API_CALL_HEADERS, verify=False)
 
 # Get activity data
-activity = str(api_call_response.text)
-json_activity = json.loads(activity)
-json_activity = json_activity['summary']['distances']
+ACTIVITY = str(API_CALL_RESPONSE.text)
+JSON_ACTIVITY = json.loads(ACTIVITY)
+JSON_ACTIVITY = JSON_ACTIVITY['summary']['distances']
 
 
 def totaldistance():
-    for i in range(len(json_activity)):
-        if 'loggedActivities' in json_activity[i]['activity']:
-            distance = round(json_activity[i]['distance'], 2)
-            print("Total moved distance: " + str(distance) + " kilometers!")
+    """Total distance"""
+    for activity in JSON_ACTIVITY:
+        if 'loggedActivities' in activity['activity']:
+            distance = round(activity['distance'], 2)
+            print("Total moved distance: {} kilometers!".format(distance))
             return distance
+    return 0
 
 
 def distancewalked():
-    for i in range(len(json_activity)):
-        if 'Walk' in json_activity[i]['activity']:
-            distance = round(json_activity[i]['distance'], 2)
-            print("Walked: " + str(distance) + " kilometers!")
+    """Distance walked"""
+    for activity in JSON_ACTIVITY:
+        if 'Walk' in activity['activity']:
+            distance = round(activity['distance'], 2)
+            print("Walked distance: {} kilometers!".format(distance))
             return distance
+    return 0
 
 
 def distanceran():
-    for i in range(len(json_activity)):
-        if 'Run' in json_activity[i]['activity']:
-            distance = round(json_activity[i]['distance'], 2)
-            print("Ran: " + str(distance) + " kilometers!")
+    """Distance ran"""
+    for activity in JSON_ACTIVITY:
+        if 'Run' in activity['activity']:
+            distance = round(activity['distance'], 2)
+            print("Run distance: {} kilometers!".format(distance))
             return distance
+    return 0
 
 
 def distancebiked():
-    for i in range(len(json_activity)):
-        if 'Bike' in json_activity[i]['activity']:
-            distance = round(json_activity[i]['distance'], 2)
-            print("Biked: " + str(distance) + " kilometers!")
+    """Distance biked"""
+    for activity in JSON_ACTIVITY:
+        if 'Bike' in activity['activity']:
+            distance = round(activity['distance'], 2)
+            print("Biked distance: {} kilometers!".format(distance))
             return distance
+    return 0
 
 
 def distanceswam():
-    for i in range(len(json_activity)):
-        if 'Swim' in json_activity[i]['activity']:
-            distance = round(json_activity[i]['distance'], 2)
-            print("Swam: " + str(distance) + " kilometers!")
+    """Distance swam"""
+    for activity in JSON_ACTIVITY:
+        if 'Swim' in activity['activity']:
+            distance = round(activity['distance'], 2)
+            print("Swam distance: {} kilometers!".format(distance))
             return distance
+    return 0
 
 
 # FOR DEBUGGING
