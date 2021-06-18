@@ -108,7 +108,7 @@ app.post('/schedule/', (req, res) => {
         .then(auth_res => {
             post_data = {
                 'username': auth_res.data.username,
-                'datetime': req.body.datetime,
+                'date': req.body.date,
                 'distance': Number(req.body.distance),
                 'type': req.body.type,
             }
@@ -135,7 +135,7 @@ app.get('/schedule/', (req, res) => {
                     schedules = []
                     api_res.data.forEach(schedule => {
                         schedules.push({
-                            'date': schedule.date,
+                            'date': schedule.date['$date'],
                             'distance': schedule.distance,
                             'type': schedule.activity_type,
                         })
@@ -159,16 +159,17 @@ app.get('/activity/', (req, res) => {
             axios.get('http://resource_activity/activity/' + auth_res.data.username)
                 .then(api_res => {
                     activities = []
-                    api_res.data.forEach(activity=> {
+                    api_res.data.forEach(activity => {
                         activities.push({
                             'date': activity.date,
                             'distance': activity.distance,
                             'type': activity.activity_type,
                         })
                     })
-                    res.json(activity)
+                    res.json(activities)
                 })
                 .catch(function (error) {
+                    console.log(error)
                     res.status(error.response.status).send(error.response.data)
                 });
         })

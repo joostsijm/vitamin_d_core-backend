@@ -10,7 +10,7 @@ blueprint = Blueprint('application', __name__)
 @blueprint.route('/activity/<username>', methods=['GET'])
 def get_activity(username):
     """Get activitiy"""
-    return jsonify(Activity.objects(username=username).first())
+    return jsonify(Activity.objects(username=username))
 
 
 @blueprint.route('/activity', methods=['POST'])
@@ -23,7 +23,7 @@ def post_activity():
             activity_type = request.json['type'],
         )
     activity.save()
-    Response(status=200)
+    return Response(status=200)
 
 
 @blueprint.errorhandler(404)
