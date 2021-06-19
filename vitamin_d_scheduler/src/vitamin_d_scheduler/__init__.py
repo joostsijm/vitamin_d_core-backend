@@ -2,16 +2,9 @@
 
 from os import environ, path, makedirs
 
-from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
 
-from vitamin_d_scheduler.blueprints import api
-
-
-# Find .env file
-basedir = path.abspath(path.dirname(__file__))
-load_dotenv(path.join(basedir, '.env'))
 
 def create_app(test_config=None):
     """Create and configure the app"""
@@ -41,8 +34,5 @@ def create_app(test_config=None):
 
     # CORS
     CORS(app, resources={r'/*': {'origins': '*'}})
-
-    # API
-    app.register_blueprint(api.notification.blueprint)
 
     return app

@@ -12,8 +12,14 @@ from vitamin_d_resource_user.models import User, NaamgegevensUser, \
 
 blueprint = Blueprint('application', __name__)
 
+@blueprint.route('/user/', methods=['GET'])
+def get_user():
+    """Get users"""
+    return jsonify(User.objects())
+
+
 @blueprint.route('/user/<username>', methods=['GET'])
-def get(username):
+def get_username(username):
     """Get user"""
     user = User.objects(username=username).first()
     if not user:
@@ -22,7 +28,7 @@ def get(username):
 
 
 @blueprint.route('/user', methods=['POST'])
-def post():
+def post_user():
     """Post user"""
     geslacht = request.json['geslacht']
     voornaam = request.json['voornaam']
@@ -88,21 +94,6 @@ def post_admin():
             EmailAdressenUser(emailAdres=username)
     administrator.save()
     return Response(status=200)
-
-
-@blueprint.route('/sendactiviteiten/username/activiteit/geplandeafstand', methods=['POST'])
-def sendactiviteiten(username, activiteit, geplandeafstand):
-    """Post schedule from user"""
-    sendactiviteit = Schedule(username=username, activiteit=activiteit, geplandeafstand=geplandeafstand)
-    sendactiviteit.save()
-    Response(status=200)
-
-
-@blueprint.route('/getactiviteiten/username/activiteit/datum', methods=['GET'])
-def getactiviteiten(username, activiteit, datum):
-    """Get schedule from user"""
-    schedule = Schedule.objects(username=username, activiteit=activiteit, activiteitDatum=datum)
-    return jsonify(schedule)
 
 
 @blueprint.errorhandler(404)

@@ -9,7 +9,7 @@ from vitamin_d_scheduler import create_app
 def main():
     """Main function"""
     app = create_app()
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=80)
     try:
         while True:
             time.sleep(100)
